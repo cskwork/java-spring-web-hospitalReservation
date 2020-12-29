@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="file">
+	<!-- 사용자, 관리자 공용 -->
+	<select id="selectFileList" parameterType="hashmap" resultType="hashmap">
+		<![CDATA[
+			SELECT 
+				F_IDX,
+				ORG_FILE,
+				ROUND(FILE_SIZE/1024, 1) AS FILE_SIZE 
+			FROM 
+				FILES 
+			WHERE 
+				IDX = #{IDX} 
+				AND DEL_CHK = 'N'
+		]]>
+	</select>
+	
+	<select id="selectFileInfo" parameterType="hashmap" resultType="hashmap">
+		<![CDATA[
+			SELECT 
+				SAVE_FILE,
+				ORG_FILE 
+			FROM 
+				FILES 
+			WHERE 
+				F_IDX = #{F_IDX}
+		]]>
+	</select>
+	
+	
+	<!-- 관리자 -->
+	<insert id="insertFile" parameterType="hashmap">
+		<![CDATA[
+			INSERT INTO FILES (
+				F_IDX,
+				IDX,
+				ORG_FILE,
+				SAVE_FILE,
+				FILE_SIZE
+			) 
+			VALUES (
+				SEQ_FILE_IDX.NEXTVAL,
+				#{IDX},
+				#{ORG_FILE},
+				#{SAVE_FILE},
+				#{FILE_SIZE}
+			)
+		]]>
+	</insert>
+	
+	<update id="deleteFileList" parameterType="hashmap">
+		<![CDATA[
+			UPDATE 
+				FILES 
+			SET 
+				DEL_CHK = 'Y' 
+			WHERE 
+				IDX = #{IDX}
+		]]>
+	</update>
+	
+	<update id="updateFile" parameterType="hashmap">
+		<![CDATA[
+			UPDATE 
+				FILES 
+			SET 
+				DEL_CHK = 'N' 
+			WHERE 
+				F_IDX = #{F_IDX}
+		]]>
+	</update>
+</mapper>

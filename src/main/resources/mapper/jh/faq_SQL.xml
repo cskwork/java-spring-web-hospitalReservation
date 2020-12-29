@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="faq">
+	<!-- 사용자만 사용 -->
+	<select id="selectFaqList" parameterType="hashmap" resultType="hashmap">
+		<include refid="common.pagingPre" />
+		
+		<![CDATA[
+			SELECT
+				ROW_NUMBER() OVER (ORDER BY IDX DESC)
+				RNUM,IDX,
+				Q,
+				A
+			FROM
+				FAQ
+			WHERE
+				DEL_CHK = 0
+			ORDER BY
+				IDX DESC
+		]]>
+		
+		<include refid="common.pagingPost" />
+	</select>
+
+	<!-- 관리자, 사용자 공용 -->
+	<select id="selectFaqDetail" parameterType="hashmap" resultType="hashmap">
+		<![CDATA[
+			SELECT
+				*
+			FROM
+				FAQ
+			WHERE
+				IDX = #{IDX}
+		]]>
+	</select>
+
+
+	<!-- 관리자만 사용 -->
+	<select id="selectAdminFaqList" parameterType="hashmap" resultType="hashmap">
+		<include refid="common.pagingPre" />
+		
+		<![CDATA[
+			SELECT
+				ROW_NUMBER() OVER (ORDER BY IDX DESC) RNUM,
+				IDX,
+				Q,
+				A,
+				DEL_CHK 
+			FROM
+				FAQ 
+			ORDER BY 
+				IDX DESC
+		]]>
+		
+		<include refid="common.pagingPost" />
+	</select>
+
+	<insert id="insertFaq" parameterType="hashmap">
+		<![CDATA[
+			INSERT INTO FAQ (
+				IDX,
+				Q,
+				A
+			)
+			VALUES (
+				SEQ_FAQ_IDX.NEXTVAL,
+				#{Q},
+				#{A}
+			)
+		]]>
+	</insert>
+
+	<update id="updateFaq" parameterType="hashmap">
+		<![CDATA[
+			UPDATE 
+				FAQ
+			SET
+				Q = #{Q},
+				A = #{A}
+			WHERE 
+				IDX = #{IDX}
+		]]>
+	</update>
+
+	<update id="deleteFaq" parameterType="hashmap">
+		<![CDATA[
+			UPDATE 
+				FAQ
+			SET
+				DEL_CHK = 1
+			WHERE
+				IDX = #{IDX}
+		]]>
+	</update>
+</mapper>

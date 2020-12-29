@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="reserv">
+	<!-- 예약하기폼에서 예약가능한 병원리스트 -->
+	<select id="selectHpList" parameterType="hashmap" resultType="hashmap">
+		<![CDATA[
+			SELECT
+				H_IDX,
+				HOSP,
+				MAJOR
+			FROM
+				HOSPITAL
+			WHERE
+				REG_CHK = 'Y'								
+		]]>
+		
+		<if test="H_IDX != null">
+		<![CDATA[
+			AND H_IDX = #{H_IDX}						
+		]]>
+		</if>
+		
+		<if test="ID != admin">
+		<![CDATA[
+			AND ID = #{ID}						
+		]]>
+		</if>
+	</select>
+	
+	<!-- 예약시간 계산을 위해 가져올 값들 -->
+	<select id="selectDate" parameterType="hashmap" resultType="hashmap">
+		<![CDATA[
+			SELECT
+				H_IDX,
+				ONHOUR,
+				OFFHOUR,
+				INTERVALL,
+				MEAL_TIME
+			FROM
+				HOSPITAL
+			WHERE
+				H_IDX = #{H_IDX} 
+				AND REG_CHK = 'Y'
+		]]>
+	</select>
+	
+	<!-- 예약가능시간 비교와 예약 내역 확인할때 사용 -->
+	<select id="selectReservation" parameterType="hashmap" resultType="hashmap">
+		<![CDATA[
+			SELECT
+				R.NUM,
+			  	R.H_IDX,
+			    R.ID,
+			    H.HOSP,
+			    R.CURED,
+			    ROW_NUMBER() OVER (ORDER BY R.RESERV1 DESC) RNUM,
+			    R.RESERV1,
+			    R.RESERV2,
+			    R.DEL_CHK
+			FROM
+				RESERVATION R, 
+				HOSPITAL H
+			WHERE 
+				R.DEL_CHK = 'B' 
+				AND R.H_IDX = H.H_IDX
+		]]>
+		
+		<if test="ID != admin">
+		<![CDATA[
+			AND R.ID = #{ID}
+		]]>
+		</if>
+		
+		<![CDATA[
+			ORDER BY RNUM DESC
+		]]>
+	</select>
+	
+	<!-- 지난예약 확인하기 -->
+	<select id="selectPastReservation" parameterType="hashmap" resultType="hashmap">
+		<![CDATA[
+			SELECT
+				R.NUM,
+			  	R.H_IDX,
+			    R.ID,
+			    H.HOSP,
+			    R.CURED,
+			    ROW_NUMBER() OVER (ORDER BY R.RESERV1 DESC) RNUM,
+			    R.RESERV1,
+			    R.RESERV2,
+			    R.DEL_CHK
+			FROM
+				RESERVATION R, 
+				HOSPITAL H
+			WHERE
+				R.DEL_CHK != 'B' 
+				AND R.H_IDX = H.H_IDX
+		]]>
+		
+		<if test="ID != admin">
+		<![CDATA[
+			AND R.ID = #{ID}						
+		]]>
+		</if>
+		
+		<![CDATA[
+			ORDER BY RNUM DESC
+		]]>
+	</select>
+	
+	<!-- 예약하기 -->
+	<insert id="insertReserv" parameterType="hashmap">
+		<![CDATA[
+			INSERT INTO RESERVATION (
+				NUM,
+				H_IDX,
+				ID,
+				CURED,
+				RESERV1,
+				RESERV2,
+				DEL_CHK,
+				STATE
+			)
+			VALUES (
+				RESERV_SEQ.NEXTVAL,
+				#{H_IDX},
+				#{ID},
+				#{CURED},
+				#{RESERV1},
+				#{RESERV2},
+				'B',
+				'미완료'
+			)
+		]]>
+	</insert>
+	
+	<!-- 지난 예약으로 바꾸기 -->
+	<update id="pastReserv" parameterType="hashmap">
+		<![CDATA[
+			UPDATE
+				RESERVATION
+			SET
+				DEL_CHK = 'A'
+			WHERE
+				ID = #{ID}
+			AND
+				DEL_CHK='B'
+			AND
+				RESERV1 < TO_CHAR(SYSDATE,'YYYY/MM/DD')
+		]]>
+	</update>
+	
+	<!-- 예약 취소하기 -->
+	<update id="cancelReserv" statementType="CALLABLE" parameterType="hashmap">
+		<![CDATA[
+		    UPDATE 
+		        RESERVATION
+		    SET 
+		        DEL_CHK = 'C'
+		        
+		    WHERE 
+		        H_IDX = #{H_IDX}
+		        AND ID = #{ID}
+		]]>
+	</update>
+	
+	<!-- 관리자-예약 목록 -->
+	<select id="selectAdminReservList" parameterType="hashmap" resultType="hashmap">
+		<include refid="common.pagingPre"/>
+		
+		<![CDATA[
+			SELECT
+			    ROW_NUMBER() OVER (ORDER BY R.RESERV1 DESC) RNUM,
+				R.*,
+			    H.HOSP
+			FROM
+				RESERVATION R, 
+				HOSPITAL H
+			WHERE 
+				R.DEL_CHK = 'B' 
+				AND R.H_IDX = H.H_IDX
+		]]>
+		
+		<include refid="common.pagingPost"/>
+	</select>
+</mapper>

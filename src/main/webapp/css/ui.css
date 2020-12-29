@@ -1,0 +1,1349 @@
+@charset "UTF-8";
+
+html {
+	font-size: 1rem;
+}
+
+body {
+	font-family: 'Noto Sans KR', sans-serif;
+	color: #3d3d3d;
+	font-size: 17px;
+	font-weight: 300;
+}
+
+body, h1, h2, h3, h4, h5, h6, p, ul, li {
+	margin: 0;
+	padding: 0;
+}
+
+ul, li {
+	list-style: none;
+}
+
+a img {
+	border: 0;
+}
+
+table {
+	border-spacing: 0;
+}
+
+.clearfix:after {
+	display: block;
+	clear: both;
+	content: ".";
+	visibility: hidden;
+	height: 0;
+}
+
+.clearfix {
+	display: block;
+}
+
+/********************************************* header *********************************************/
+.Tiles_wrap {
+	width: 1200px;
+	height: auto;
+	margin: 0 auto;
+}
+
+.header {
+	position: relative;
+	height: 100px;
+}
+
+.header>div:not(.subMenu) {
+	grid-template-columns: 200px auto 200px;
+	grid-template-areas: 'Logo Menu Login';
+	display: grid;
+	margin: auto;
+	width: 1200px;
+	height: 100%;
+}
+
+.header>div>.Logo {
+	grid-area: Logo;
+	margin: auto;
+}
+
+.header>div>.menu {
+	grid-area: Menu;
+	margin: auto auto auto 30px;
+}
+
+.header>div>.menu a {
+	text-decoration: none;
+	color: #333;
+}
+
+.header>div>.menu>ul>li {
+	display: inline-block;
+}
+.header>div>.menu>ul>li:not(.left) {
+	margin-left: 100px;
+}
+.header>div>.login {
+	grid-area: Login;
+	margin: auto;
+}
+
+.header>div>.login>.mypageList {
+	position: absolute;
+	z-index: 110;
+	display: none;
+	top: 70px;
+}
+
+.header>div>.login>.mypageList>.mypageList2 {
+	display: grid;
+	grid-template-columns: repeat(1, 1fr);
+	grid-auto-rows: minmax(auto, auto);
+	margin-left: -75px;
+	border: 1px solid #a9a9a9;
+	width: 160px;
+	height: auto;
+	background-color: #efefef;
+	font-size: 14px;
+}
+
+.header>div>.login>.mypageList>.mypageList2>a {
+	padding: 10px 0;
+	margin: 0 15px;
+}
+
+.header .subMenu {
+	display: none;
+	position: absolute;
+	z-index: 100;
+	width: 100%;
+	height: 80px;
+	background: #d9d9d9;
+}
+.header .subMenu>div {
+	margin: 25px 0 0 0;
+	height: 100%
+}
+.header .subMenu>div>ul {
+	display: none;
+}
+
+.header .subMenu>div>ul>li {
+	display: inline-block;
+	float: left;
+	margin-left: 100px;
+}
+
+.header .subMenu>div>ul>.left {
+}
+/********************************************* body *********************************************/
+
+/* 병원 리스트 관련 css (list.jsp) */
+
+/* 리스트 출력용 스타일 */
+.visual {
+	padding: 100px 0 60px 0;
+}
+
+.Tiles_wrap>h2 {
+	margin-top: 10px;
+}
+
+.center_right_top {
+	padding: 25px 0 25px 100px;
+	border: 1px solid #f0esd6;
+}
+
+#SEARCHVALUE, #address {
+	margin-left: 15px;
+}
+
+input[type='button'] {
+	border: 1px solid #01395c;
+	background: #fff;
+	color: #01395c;
+	padding: 2px 2px;
+}
+
+input[type='button']:hover {
+	border: 1px solid #01395c;
+	background: #01395c;
+	color: #fff;
+	padding: 2px 2px;
+}
+
+select {
+	width: 150px;
+	display: inline-block;
+	float: left;
+}
+
+.searchAdd {
+	display: inline-block;
+	float: right;
+}
+
+.gridForm {
+	margin-top: 20px;
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	grid-auto-rows: minmax(auto, auto);
+	grid-template-areas: "listForm floatMenu" "PAGE_NAVI a";
+}
+
+.gridForm>#listForm {
+	grid-area: listForm;
+    margin: 0 10px 0 0;
+	width: 690px;
+}
+
+.gridForm>div:not(#PAGE_NAVI) {
+	grid-area: floatMenu;
+	
+}
+.gridForm>div>.floatMenu {
+}
+
+/* 지도가 움직이기위해 필요 */
+.gridForm>div>.floatMenu {
+	position: absolute;
+	float: right;
+	width: 500px;
+	height: 400px;
+}
+
+.gridForm>div>.floatMenu>#daumMap {
+	width: 500px;
+	height: 400px;
+}
+
+.gridForm>#PAGE_NAVI {
+	grid-area: PAGE_NAVI;
+}
+
+.Hp_list {
+	width: 100%;
+}
+
+.Hp_list .listform {
+	border-bottom: 1px solid;
+	border-left: 1px solid;
+	border-right: 1px solid;
+	border-collapse: separate;
+	width: 100%
+}
+
+.Hp_list .listform_border {
+	border: 1px solid;
+	border-collapse: separate;
+	width: 100%
+}
+
+/********************/
+
+/* 커스텀 오버레이에 표시할 컨텐츠 */
+.Map_wrap {
+	width: 288px;
+	height: 132px;
+	position: absolute;
+	left: 0;
+	bottom: 40px;
+	margin-left: -144px;
+	text-align: left;
+	overflow: hidden;
+	font-size: 12px;
+	font-family: 'Malgun Gothic', dotum, '돋움', sans-serif;
+	line-height: 1.5;
+}
+
+.Map_wrap * {
+	padding: 0;
+	margin: 0;
+}
+
+.Map_wrap .info {
+	width: 286px;
+	height: 120px;
+	border-radius: 5px;
+	border-bottom: 2px solid #ccc;
+	border-right: 1px solid #ccc;
+	overflow: hidden;
+	background: #fff;
+}
+
+.Map_wrap .info:nth-child(1) {
+	border: 0;
+	box-shadow: 0px 1px 2px #888;
+}
+
+.info .title {
+	padding: 5px 0 0 10px;
+	height: 30px;
+	background: #eee;
+	border-bottom: 1px solid #ddd;
+	font-size: 18px;
+	font-weight: bold;
+}
+
+.info .close {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	color: #888;
+	width: 17px;
+	height: 17px;
+	background:
+		url('http://t1.daumcdn.net/localimg/localimages/07/mapapidoc/overlay_close.png');
+}
+
+.info .close:hover {
+	cursor: pointer;
+}
+
+.info .body {
+	position: relative;
+	overflow: hidden;
+}
+
+.info .desc {
+	position: relative;
+	margin: 13px 0 0 90px;
+	height: 75px;
+}
+
+.info .img {
+	position: absolute;
+	top: 6px;
+	left: 5px;
+	width: 73px;
+	height: 71px;
+	border: 1px solid #ddd;
+	color: #888;
+	overflow: hidden;
+}
+
+.info:after {
+	content: '';
+	position: absolute;
+	margin-left: -12px;
+	left: 50%;
+	bottom: 0;
+	width: 22px;
+	height: 12px;
+	background: url('#')
+}
+
+.info .link {
+	color: #5085BB;
+}
+
+.desc .ellipsis {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.desc .jibun {
+	font-size: 11px;
+	color: #888;
+	margin-top: -2px;
+}
+/*************************/
+/******************************/
+
+/* 진료 예약 관련(reserv.jsp) */
+.reserv {
+	width: 700px;
+	height: 700px;
+	margin: auto;
+	padding-top: 50px
+}
+/**************************/
+
+/* 공지사항 리스트 관련(notice/List.jsp) */
+.Notice_list {
+	width: 700px;
+	padding: 50px 0;
+	margin: auto;
+	font-size: 17px;
+}
+
+.Notice_list>h2 {
+	
+}
+
+.Notice_list>table {
+	border: 1px solid #cccccc;
+}
+
+.Notice_list>table>thead {
+	text-align: center;
+	height: 20px;
+	background-color: #525050;
+	color: #e8e7e7;
+	border: 1px solid #bbbbbb;
+}
+
+.Notice_list>table>tbody>.tmptr {
+	height: 10px;
+}
+
+.Notice_list>table>thead>tr>#th_Graduation, .Notice_list>table>tbody>tr>#td_Graduation
+	{
+	border-left: 2px solid #cccccc;
+	border-right: 2px solid #cccccc;
+}
+
+.Notice_list>table>tbody>tr>td>a {
+	padding-left: 30px;
+}
+
+/***********************************/
+
+/* 공지사항 상세보기 관련(notice/Detail.jsp) */
+.Notice_detail {
+	width: 700px;
+	padding-top: 50px;
+	padding-bottom: 50px;
+	margin: auto;
+	height: auto;
+}
+
+.Notice_detail>h2 {
+	
+}
+
+.Notice_detail>table {
+	border: 1px solid #ccc;
+	width: 700px;
+	border-collapse: separate;
+}
+
+.Notice_detail>table>tbody>.tmptr {
+	height: 20px;
+}
+
+.Notice_detail>table>tbody>tr>.tmptd {
+	width: 100px;
+}
+
+.Notice_detail>table>tbody>tr>.Notice_detail_title {
+	height: 55px;
+	border-top: 1px solid #cccccc;
+	border-bottom: 1px solid #cccccc;
+}
+
+.Notice_detail>table>tbody>tr>.Notcie_detail_content {
+	padding-top: 30px;
+	padding-bottom: 30px;
+	border-bottom: 1px solid #cccccc;
+}
+
+.Notice_detail>table>tbody>tr>.Notcie_detail_file {
+	padding-top: 30px;
+	padding-bottom: 30px;
+}
+
+.Notice_detail>table>tbody>tr>.Notcie_detail_file>p {
+	margin-bottom: 0px;
+}
+
+.Notice_detail>table>tbody>tr>.Notcie_detail_reg {
+	text-align: right;
+	padding-top: 15px;
+	padding-bottom: 15px;
+	border-top: 1px solid #cccccc;
+	border-bottom: 1px solid #cccccc;
+}
+/*************************************/
+
+/* FAQ 관련(faq/List.jsp) */
+.Faq_List {
+	width: 700px;
+	height: 1000px;
+	padding-top: 50px;
+	padding-bottom: 50px;
+	margin: auto;
+}
+
+.Faq_List>h2 {
+	margin-bottom: 20px;
+}
+
+.Faq_List>table>tbody>tr {
+	width: 700px;
+	text-align: left;
+	border-top: 1px solid #ccc;
+	border-left: 1px solid #ccc;
+	border-right: 1px solid #ccc;
+}
+
+.Faq_List>table>tbody>tr>td {
+	font-size: 18px;
+	height: 50px;
+	border-bottom: 1px solid #ccc;
+}
+
+.Faq_List>table>tbody>tr>td>.Faq_List_Q_CLS {
+	padding-left: 20px;
+	padding-right: 20px;
+	border-right: 1px solid #cccccc;
+}
+
+.Faq_List>table>tbody>tr>td>.Faq_List_FAQ {
+	margin-left: 20px;
+	margin-right: 20px;
+}
+/*************************/
+
+/* QnA 관련(faq/List.jsp) */
+.QnA_list {
+	width: 700px;
+	padding-top: 50px;
+	padding-bottom: 50px;
+	margin: auto;
+	font-size: 17px;
+}
+
+.QnA_list>h2 {
+	
+}
+
+.QnA_list>table {
+	border: 1px solid #cccccc;
+}
+
+.QnA_list>table>thead {
+	text-align: center;
+	height: 20px;
+	background-color: #525050;
+	color: #e8e7e7;
+	border: 1px solid #bbbbbb;
+}
+
+.QnA_list>table>tbody>.tmptr {
+	height: 10px;
+}
+
+.QnA_list>table>thead>tr>#th_Graduation, .QnA_list>table>tbody>tr>#td_Graduation
+	{
+	border-left: 2px solid #cccccc;
+	border-right: 2px solid #cccccc;
+}
+
+.QnA_list>table>tbody>tr>td>a {
+	padding-left: 30px;
+}
+/*************************/
+
+/* mypageMain 관련 (mypage/mypageMain.jsp) */
+.myInfo {
+	width: min-content;
+	margin: auto;
+	padding: 40px 0;
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	grid-auto-rows: minmax(auto, auto);
+	grid-template-areas: "UserInfo HLTInfo" "modify modify";
+}
+
+.myInfo .UserInfo {
+	width: 450px;
+	margin-right: 50px;
+	border: 5px double #a9a9a9;
+	grid-area: UserInfo;
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	grid-auto-rows: minmax(auto, auto);
+	grid-template-areas: "hd hd" "u_img u_b_i";
+}
+
+.myInfo .UserInfo .UserInfo_header {
+	grid-area: hd;
+	width: 440px;
+	height: 40px;
+	border-bottom: 1px solid #a9a9a9;
+	background-color: #171717;
+	color: #e1e1e1;
+}
+
+.myInfo .UserInfo .UserImg {
+	grid-area: u_img;
+	border-right: 1px solid #a9a9a9;
+	font-size: 14px;
+	width: 130px;
+}
+
+.myInfo .UserInfo .UserBaseInfo {
+	grid-area: u_b_i;
+}
+
+.myInfo .UserInfo .UserBaseInfo .tmptr {
+	height: 10px;
+}
+
+.myInfo .UserInfo .UserBaseInfo>tbody>tr {
+	height: 26px;
+}
+
+.myInfo .UserInfo .UserBaseInfo>tbody>tr>th {
+	border-right: 1px solid #a9a9a9;
+	padding: 0 0 0 20px;
+}
+
+.myInfo .UserInfo .UserBaseInfo>tbody>tr>td {
+	padding: 0 10px 0 10px;
+}
+
+.UserBodyInfo {
+	width: 400px;
+	border: 5px double #a9a9a9;
+	grid-area: HLTInfo;
+}
+
+.myInfo .UserBodyInfo .UserBodyInfo_header {
+	grid-area: hd;
+	width: 390px;
+	height: 40px;
+	border-bottom: 1px solid #a9a9a9;
+	background-color: #171717;
+	color: #e1e1e1;
+}
+
+.myInfo .UserBodyInfo .UserBodyInfo_body .tmptr {
+	height: 10px;
+}
+
+.myInfo .UserBodyInfo .UserBodyInfo_body>tbody>tr {
+	height: 26px;
+}
+
+.myInfo .UserBodyInfo .UserBodyInfo_body>tbody>tr>th {
+	border-right: 1px solid #a9a9a9;
+	padding: 0 10px;
+}
+
+.myInfo .UserBodyInfo .UserBodyInfo_body>tbody>tr>td {
+	padding: 0 10px 0 10px;
+}
+
+.myInfo .UserBodyInfo .UserBodyInfo_body>tbody>tr>td>progress {
+	/* Reset the default appearance */
+	-webkit-appearance: none;
+	width: 370px;
+	height: 30px;
+	padding: 5px 0;
+	vertical-align: sub;
+}
+
+.myInfo .UserBodyInfo .UserBodyInfo_body>tbody>tr>td>progress::-webkit-progress-bar
+	{
+	background-image: -webkit-linear-gradient(0, #7ba5be, #7ba5be 33%, #547bda 33%, #547bda
+		58%, #797ad7 58%, #797ad7 70%, #bb78d9 70%, #bb78d9 90%, #f85268 90%,
+		#f85268);
+	border-radius: 2px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) inset;
+}
+
+.myInfo .UserBodyInfo .UserBodyInfo_body>tbody>tr>td>progress::-webkit-progress-value
+	{
+	background-color: rgba(255, 255, 255, 0);
+	background-size: 35px 20px, 100% 100%, 100% 100%;
+	border-right: 2px solid;
+}
+
+.point_payment {
+	display: none;
+}
+
+input[name='close'] {
+	float: right;
+	margin: 2px 2px;
+}
+
+.box {
+	position: fixed;
+	left: 40%;
+	top: 24.3%;
+	background: #fff;
+	width: 426px;
+	height: 550px;
+	z-index: 320;
+}
+
+.innerbox {
+	margin: 20% 10% 45% 10%;
+}
+
+.innerbox b, .payment {
+	display: block;
+}
+
+.innerbox b {
+	margin: 0 0 15% 0;
+}
+
+input[name='won'] {
+	display: block;
+	border: none;
+	border-bottom: 3px solid;
+	width: 100%;
+}
+
+.content {
+	padding-top: 5px;
+	color: #6666cc;
+}
+
+a[name='payment'] {
+	margin-left: 20px;
+	border: 1px solid;
+	padding: 2% 38%;
+}
+
+.bbg {
+	position: fixed;
+	right: 0;
+	top: 0;
+	background-color: rgba(0, 0, 0, 0.6);
+	width: 100%;
+	height: 100%;
+	z-index: 310;
+}
+
+/******************************************/
+
+/* 진료 내역 (mypage/reservation.jsp) */
+a[name='delFavHp'], a[name='cancel'] {
+	background: #1AAB8A;
+	border: none;
+	position: relative;
+	font-size: 18px;
+	padding: 0 1em;
+	cursor: pointer;
+	transition: 800ms ease all;
+	outline: none;
+	float: right;
+	margin-bottom: 5px;
+}
+
+.myReservList {
+	margin: 0 auto;
+	padding: 40px 0;
+	width: 650px;
+}
+
+.myReservList>table {
+	border: 1px solid #a9a9a9;
+	text-align: center;
+}
+
+.myReservList>table>thead>tr {
+	border-bottom: 1px solid #a9a9a9;
+}
+
+.myReservList>table>thead>tr>td {
+	padding: 10px 0;
+	font-weight: 600;
+}
+
+.myReservList>table>thead>tr>td>p {
+	margin-bottom: 0;
+	padding: 0 10px;
+}
+
+.myReservList>table>thead>tr>td>#p_border {
+	border-right: 1px solid #a9a9a9;
+}
+
+.myReservList #Warning {
+	font-size: 12px;
+	color: #ff0000;
+}
+
+.myReservList #Notice {
+	margin-top: 100px;
+	font-size: 12px;
+}
+/***********************************/
+
+/* 관심병원 리스트 관련 (mypage/mypageFavHp.jsp) */
+.FavList {
+	width: 700px;
+	margin: 0 auto;
+	padding: 40px 0;
+}
+
+.FavList>table {
+	width: 700px;
+	border: 1px solid #a9a9a9;
+	text-align: center;
+}
+
+.FavList>table>thead>tr {
+	border-bottom: 1px solid #a9a9a9;
+}
+
+.FavList>table>thead>tr>th {
+	padding: 10px 0;
+}
+
+.FavList>table>thead>tr>th>p {
+	margin-bottom: 0;
+	padding: 0 10px;
+}
+
+.FavList>table>thead>tr>th>#p_border {
+	border-right: 1px solid #a9a9a9;
+}
+/*******************************************/
+
+/* 후기 리스트 관련 (mypage/mypageRater.jsp) */
+.RateList {
+	width: 700px;
+	padding: 40px 0;
+	margin: 0 auto;
+}
+
+.RateList>table {
+	width: 100%;
+	border: 1px solid #a9a9a9;
+	text-align: center;
+}
+
+.RateList>table>thead>tr {
+	border-bottom: 1px solid #a9a9a9;
+}
+
+.RateList>table>thead>tr>th {
+	padding: 10px 0;
+}
+
+.RateList>table>thead>tr>th>p {
+	margin-bottom: 0;
+	padding: 0 10px;
+}
+
+.RateList>table>thead>tr>th>#p_border {
+	border-right: 1px solid #a9a9a9;
+}
+/****************************************/
+.RateWrite {
+	width: 800px;
+	padding: 40px 0;
+	margin: 0 auto;
+}
+
+.RateWrite>h4 {
+	padding: 0 0 20px 0;
+}
+
+.RateWrite .Rate_box {
+	border: 1px solid #666;
+	margin-bottom: 5px;
+}
+
+.RateWrite .Rate_box>ul {
+	list-style: none;
+	margin-top: 10px;
+}
+
+.RateWrite .Rate_box>ul>li {
+	display: inline-block;
+	padding: 0 40px;
+}
+
+.RateWrite .Rate_box>ul>li>input[type="radio"] {
+	padding-left: 40px;
+}
+
+.RateWrite>div>div>textarea {
+	font-size: 18px;
+	width: 800px;
+	height: 100px;
+	resize: none;
+}
+
+.RateWrite>#rate {
+	margin: 10px 0 0 650px;
+}
+/********************************************* footer *********************************************/
+.footer {
+	border-top: 1px solid #555;
+}
+
+.footer img {
+	display: inline-block;
+	float: left;
+	margin-left: 100px;
+}
+
+.footer p {
+	display: inline-block;
+	float: left;
+	font-color: #555;
+	margin-left: 200px;
+}
+
+/********************************************* 성국 *********************************************/
+a:link, a:visited {
+	text-decoration: none;
+	color: #656565;
+}
+
+.board_list {
+	width: 100%;
+	border-top: 2px solid #252525;
+	border-bottom: 1px solid #ccc
+}
+
+.board_list thead th:first-child {
+	background-image: none
+}
+
+.board_list thead th {
+	border-bottom: 1px solid #ccc;
+	padding: 12px 0 13px 0;
+	color: #3b3a3a;
+	vertical-align: middle
+}
+
+.board_list tbody td {
+	border-top: 1px solid #ccc;
+	padding: 10px 0;
+	text-align: center;
+	vertical-align: middle
+}
+
+.board_list tbody tr:first-child td {
+	border: none
+}
+
+.board_list tbody td.title {
+	text-align: left;
+	padding-left: 20px
+}
+
+.board_list tbody td a {
+	display: inline-block
+}
+
+.board_view {
+	width: 50%;
+	border-top: 2px solid #252525;
+	border-bottom: 1px solid #ccc
+}
+
+.board_view tbody th {
+	text-align: left;
+	background: #f7f7f7;
+	color: #3b3a3a
+}
+
+.board_view tbody th.list_tit {
+	font-size: 13px;
+	color: #000;
+	letter-spacing: 0.1px
+}
+
+.board_view tbody .no_line_b th, .board_view tbody .no_line_b td {
+	border-bottom: none
+}
+
+.board_view tbody th, .board_view tbody td {
+	padding: 15px 0 16px 16px;
+	border-bottom: 1px solid #ccc
+}
+
+.board_view tbody td.view_text {
+	border-top: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
+	padding: 45px 18px 45px 18px
+}
+
+.board_view tbody th.th_file {
+	padding: 0 0 0 15px;
+	vertical-align: middle
+}
+
+.wdp_90 {
+	width: 90%
+}
+
+.btn {
+	border-radius: 3px;
+	padding: 5px 11px;
+	color: #fff !important;
+	display: inline-block;
+	background-color: #6b9ab8;
+	border: 1px solid #56819d;
+	vertical-align: middle
+}
+
+.pad_5 {
+	padding: 5px;
+}
+
+/********************************************* loginForm *********************************************/
+@import url(http://fonts.googleapis.com/earlyaccess/nanumgothic.css);
+
+* {
+	font-family: 'Nanum Gothic', sans-serif;
+	margin: 0px;
+	padding: 0px;
+}
+
+#logreg-forms {
+	margin: 10vh auto;
+	background-color: #f3f3f3;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+	transition: all 0.3s cubic-bezier(.25, .8, .25, 1);
+}
+
+#logreg-forms form {
+	width: 100%;
+	max-width: 410px;
+	padding: 15px;
+	margin: auto;
+}
+
+#logreg-forms .form-control {
+	position: relative;
+	box-sizing: border-box;
+	height: auto;
+	padding: 10px;
+	font-size: 16px;
+}
+
+#logreg-forms .form-control:focus {
+	z-index: 2;
+}
+
+#logreg-forms .form-signin input[type="email"] {
+	margin-bottom: -1px;
+	border-bottom-right-radius: 0;
+	border-bottom-left-radius: 0;
+}
+
+#logreg-forms .form-signin input[type="password"] {
+	border-top-left-radius: 0;
+	border-top-right-radius: 0;
+}
+
+#logreg-forms .social-login {
+	width: 390px;
+	margin: 0 auto;
+	margin-bottom: 14px;
+}
+
+#logreg-forms .social-btn {
+	font-weight: 100;
+	color: white;
+	width: 190px;
+	font-size: 0.9rem;
+}
+
+#logreg-forms a {
+	display: block;
+	padding-top: 10px;
+	color: lightseagreen;
+}
+
+#logreg-form .lines {
+	width: 200px;
+	border: 1px solid red;
+}
+
+#logreg-forms button[type="submit"] {
+	margin-top: 10px;
+}
+
+#logreg-forms .facebook-btn {
+	background-color: #3C589C;
+}
+
+#logreg-forms .google-btn {
+	background-color: #DF4B3B;
+}
+
+#logreg-forms .form-reset, #logreg-forms .form-signup {
+	display: none;
+}
+
+#logreg-forms .form-signup .social-btn {
+	width: 210px;
+}
+
+#logreg-forms .form-signup input {
+	padding-bottom: 2px;
+}
+
+.form-signup .social-login {
+	width: 210px !important;
+	margin: 0 auto;
+}
+
+/* Mobile */
+@media screen and (max-width:500px) {
+	#logreg-forms {
+		width: 300px;
+	}
+	#logreg-forms  .social-login {
+		width: 200px;
+		margin: 0 auto;
+		margin-bottom: 10px;
+	}
+	#logreg-forms  .social-btn {
+		font-size: 1.3rem;
+		font-weight: 100;
+		color: white;
+		width: 200px;
+		height: 56px;
+	}
+	#logreg-forms .social-btn:nth-child(1) {
+		margin-bottom: 5px;
+	}
+	#logreg-forms .social-btn span {
+		display: none;
+	}
+	#logreg-forms  .facebook-btn:after {
+		content: 'Facebook';
+	}
+	#logreg-forms  .google-btn:after {
+		content: 'Google+';
+	}
+}
+
+/* The container */
+.container {
+	display: block;
+	position: relative;
+	padding-left: 35px;
+	margin-bottom: 12px;
+	cursor: pointer;
+	font-size: 15px;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+/* Hide the browser's default radio button */
+.container input {
+	position: absolute;
+	opacity: 0;
+	cursor: pointer;
+}
+
+/* Create a custom radio button */
+.checkmark {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 25px;
+	width: 25px;
+	background-color: #eee;
+	border-radius: 50%;
+}
+
+/* On mouse-over, add a grey background color */
+.container:hover input ~ .checkmark {
+	background-color: #ccc;
+}
+
+/* When the radio button is checked, add a blue background */
+.container input:checked ~ .checkmark {
+	background-color: #2196F3;
+}
+
+/* Create the indicator (the dot/circle - hidden when not checked) */
+.checkmark:after {
+	content: "";
+	position: absolute;
+	display: none;
+}
+
+/* Show the indicator (dot/circle) when checked */
+.container input:checked ~ .checkmark:after {
+	display: block;
+}
+
+/* Style the indicator (dot/circle) */
+.container .checkmark:after {
+	top: 9px;
+	left: 9px;
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: white;
+}
+
+.fade-in {
+	position: absolute;
+	width: 90%;
+	height: 90%;
+	background-color: #FFFFFF;
+	top: 0;
+	right: 0;
+	animation: heartRateIn 5.5s linear infinite;
+}
+
+.fade-out {
+	position: absolute;
+	width: 110%;
+	height: 90%;
+	top: 0;
+	left: -120%;
+	animation: heartRateOut 5.5s linear infinite;
+	background: rgba(255, 255, 255, 1);
+	background: -moz-linear-gradient(left, rgba(255, 255, 255, 1) 0%,
+		rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0) 100%);
+	background: -webkit-linear-gradient(left, rgba(255, 255, 255, 1) 0%,
+		rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0) 100%);
+	background: -o-linear-gradient(left, rgba(255, 255, 255, 1) 0%,
+		rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0) 100%);
+	background: -ms-linear-gradient(left, rgba(255, 255, 255, 1) 0%,
+		rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0) 100%);
+	background: linear-gradient(to right, rgba(255, 255, 255, 1) 0%,
+		rgba(255, 255, 255, 1) 80%, rgba(255, 255, 255, 0) 100%);
+}
+
+@
+keyframes heartRateIn { 0% {
+	width: 100%;
+}
+
+50%
+{
+width
+
+
+:
+
+ 
+
+0;
+}
+100%
+{
+width
+
+
+:
+
+ 
+
+0;
+}
+}
+@
+keyframes heartRateOut { 0% {
+	left: -120%;
+}
+
+30%
+{
+left
+
+
+:
+
+ 
+
+-120%;
+}
+100%
+{
+left
+
+
+:
+
+ 
+
+0;
+}
+}
+.heart {
+	position: absolute;
+	margin: 60px 0px 0px 4px;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background-color: skyblue;
+	height: 40px;
+	width: 40px;
+	transform: rotate(-60deg);
+}
+
+.heart:after {
+	background-color: skyblue;
+	content: "";
+	border-radius: 50%;
+	position: absolute;
+	width: 40px;
+	height: 40px;
+	top: 0px;
+	left: 25px;
+}
+
+.heart:before {
+	background-color: skyblue;
+	content: "";
+	border-radius: 50%;
+	position: absolute;
+	width: 40px;
+	height: 40px;
+	top: -25px;
+	left: 0px;
+}
+
+@
+keyframes beat { 0% {
+	transform: scale(1) rotate(-60deg);
+}
+
+50%
+{
+transform
+
+
+:
+
+ 
+
+scale
+
+
+(0
+.9
+
+
+)
+rotate
+
+
+(-60
+deg
+);
+
+
+  
+
+}
+}
+.logoText {
+	font-size: 35px;
+	text-shadow: 0 1px 0 #ccc, 0 2px 0 #c9c9c9, 0 3px 0 #bbb, 0 4px 0
+		#b9b9b9, 0 5px 0 #aaa, 0 6px 1px rgba(0, 0, 0, .1), 0 0 5px
+		rgba(0, 0, 0, .1), 0 1px 3px rgba(0, 0, 0, .3), 0 3px 5px
+		rgba(0, 0, 0, .2), 0 5px 10px rgba(0, 0, 0, .25), 0 10px 10px
+		rgba(0, 0, 0, .2), 0 20px 20px rgba(0, 0, 0, .15);
+	font-family: times, Times New Roman, times-roman, georgia, serif;
+	color: skyblue;
+	margin: 0;
+	padding: 0px -5px 6px 0px;
+	line-height: 44px;
+	letter-spacing: -2px;
+	font-weight: bold;
+}

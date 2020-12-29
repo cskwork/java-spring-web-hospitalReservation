@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mypage">
+	<!-- 내 정보 보기 -->
+	<select id="selectUserInfo" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT
+				*
+			FROM
+				MEMBER
+			WHERE
+				ID=#{ID}
+		]]>
+	</select>
+
+	<!-- 내 정보 수정 -->
+	<update id="updateUserInfo" parameterType="hashmap">
+		<![CDATA[
+			UPDATE 
+				MEMBER 
+		]]>
+
+		<trim prefix="SET" suffixOverrides=",">
+			ID = #{ID},
+			NAME = #{NAME},
+			GENDER = #{GENDER},
+			PHONE = #{PHONE},
+			ADDR = #{ADDR},
+
+			<if test="HEIGHT != null">
+				HEIGHT=#{HEIGHT},
+			</if>
+
+			<if test="WEIGHT != null">
+				WEIGHT=#{WEIGHT},
+			</if>
+
+			<if test="B_TYPE != null">
+				B_TYPE=#{B_TYPE}
+			</if>
+		</trim>
+	    
+		<![CDATA[	
+			WHERE
+				IDX=#{IDX}
+		]]>
+
+	</update>
+
+	<update id="updateUserIMG" parameterType="hashmap">
+		<![CDATA[
+			UPDATE 
+				MEMBER 
+			SET 
+				ID_IMG = 'Y' 
+			WHERE 
+				IDX = #{IDX}
+		]]>
+	</update>
+
+	<update id="deleteUserIMG" parameterType="hashmap">
+		<![CDATA[
+			UPDATE 
+				MEMBER 
+			SET 
+				ID_IMG = 'N' 
+			WHERE 
+				IDX = #{IDX}
+		]]>
+	</update>
+
+	<!-- 관심병원등록하기 -->
+	<insert id="insertFav" parameterType="hashmap">
+		<![CDATA[
+			INSERT INTO FAV (
+				H_IDX,
+				ID
+			)
+			VALUES (
+				#{H_IDX},
+				#{ID}
+			)
+		]]>
+	</insert>
+
+	<!-- 포인트 적립하기 -->
+	<update id="updatePoint" parameterType="hashmap">
+		<![CDATA[
+			UPDATE 
+				MEMBER
+			SET
+				POINT = POINT + #{POINT}
+			WHERE 
+				ID = #{ID}
+		]]>
+	</update>
+
+	<!-- 포인트 차감하기 -->
+	<update id="updatePoint2" parameterType="hashmap">
+		<![CDATA[
+			UPDATE 
+				MEMBER
+			SET
+				POINT = POINT - 100
+			WHERE 
+				ID = #{ID}
+		]]>
+	</update>
+
+	<!-- 포인트 돌려주기 -->
+	<update id="returnPoint" parameterType="hashmap">
+		<![CDATA[			        
+		    UPDATE 
+		        MEMBER
+		    SET 
+		        POINT = POINT+100
+		        
+		    WHERE 
+		         ID = #{ID}
+         ]]>
+	</update>
+
+	<!-- 관심병원 리스트 -->
+	<select id="selectFavList" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT 
+			    H.H_IDX,
+			    H.HOSP,
+			    H.TEL,
+			    H.ADDR
+			FROM
+			    HOSPITAL  H,
+			    FAV F
+			WHERE 
+				F.H_IDX = H.H_IDX
+				AND F.ID = #{ID}
+		]]>
+	</select>
+
+	<!-- 관심병원 삭제하기 -->
+	<delete id="delFavHp" parameterType="hashmap">
+		<![CDATA[
+			DELETE 
+			FROM
+				FAV
+			WHERE
+				H_IDX = #{H_IDX}
+				AND ID = #{ID}
+		]]>
+	</delete>
+</mapper>

@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="admin">
+	<!-- 다중 수정 파트 쿼리 -->
+	<update id="Admin_updateMultiMember" parameterType="hashmap">
+		<![CDATA[
+			UPDATE 
+				MEMBER
+			SET
+				NAME = #{NAME},
+		]]>
+		<if test='PWD != "비공개"'>
+			<![CDATA[
+				PWD = #{PWD},
+			]]>
+		</if>
+		<![CDATA[
+				ADDR = #{ADDR},
+				JUMIN = #{JUMIN},
+				POINT = #{POINT}
+			WHERE 
+				ID = #{ID}
+		]]>
+	</update>
+	
+	<update id="Admin_updateMultiHp" parameterType="hashmap">
+		<![CDATA[
+			UPDATE 
+				HOSPITAL
+			SET
+				HOSP = #{HOSP},
+				TEL = #{TEL},
+				MAJOR = #{MAJOR},
+				ADDR = #{ADDR},
+				H_COMM = #{H_COMM}
+			WHERE 
+				H_IDX = #{H_IDX}
+		]]>
+	</update>
+	
+	<update id="Admin_updateMultiReserv" parameterType="hashmap">
+		<![CDATA[
+			UPDATE 
+				RESERVATION
+			SET
+				HOSP = #{HOSP},
+				DEL_CHK = #{DEL_CHK},
+				REG = #{REG},
+				DEL_CHK = #{DEL_CHK}
+			WHERE 
+				ID = #{ID}
+		]]>
+	</update>
+	
+	<update id="Admin_updateMultiNotice" parameterType="hashmap">
+		<![CDATA[
+			UPDATE 
+				NOTICE
+			SET
+				HITS = #{HITS},
+				TITLE = #{TITLE},
+				REG = #{REG},
+				DEL_CHK = #{DEL_CHK}
+			WHERE 
+				IDX = #{IDX}
+		]]>
+	</update>
+	
+	<update id="Admin_updateMultiFaq" parameterType="hashmap">
+		<![CDATA[
+			UPDATE 
+				FAQ
+			SET
+				Q = #{Q},
+				A = #{A},
+				DEL_CHK = #{DEL_CHK}
+			WHERE 
+				IDX = #{IDX}
+		]]>
+	</update>
+	
+	<update id="Admin_updateMultiQna" parameterType="hashmap">
+		<![CDATA[
+			UPDATE 
+				QNA
+			SET
+				TITLE = #{TITLE},
+				CONTENT = #{CONTENT},
+				REG = #{REG},
+				DEL_CHK = #{DEL_CHK}
+			WHERE 
+				IDX = #{IDX}
+		]]>
+	</update>
+	
+	<update id="Admin_updateMultiRating" parameterType="hashmap">
+		<![CDATA[
+			UPDATE 
+				RATING
+			SET
+				COMM = #{COMM},
+				REG = #{REG},
+				DEL_CHK = #{DEL_CHK}
+			WHERE 
+				NUM = #{NUM}
+		]]>
+	</update>
+	
+	<!-- 살세 수정 파트 쿼리 -->
+	<update id="Admin_updateDetailMember" parameterType="hashmap">
+		<![CDATA[
+			UPDATE 
+				MEMBER
+			SET
+				NAME = #{NAME},
+		]]>
+		<if test='PWD != "비공개"'>
+			<![CDATA[
+				PWD = #{PWD},
+			]]>
+		</if>
+		<![CDATA[
+				ADDR = #{ADDR},
+				JUMIN = #{JUMIN},
+				GENDER = #{GENDER},
+				ADDR = #{ADDR},
+				DEL_CHK = #{DEL_CHK},
+				POINT = #{POINT}
+			WHERE 
+				ID = #{ID}
+		]]>
+	</update>
+	
+	<update id="Admin_updateDetailHp" parameterType="hashmap">
+		<![CDATA[
+			UPDATE 
+				HOSPITAL
+			SET
+				HOSP = #{HOSP},
+				MAJOR = #{MAJOR},
+				TEL = #{TEL},
+				REG_CHK = #{REG_CHK},
+				ADDR = #{ADDR},
+				ONHOUR = #{ONHOUR},
+				OFFHOUR = #{OFFHOUR},
+				INTERVALL = #{INTERVALL},
+				H_COMM = #{H_COMM},
+				DOC_COMM = #{DOC_COMM},
+				DEL_CHK = #{DEL_CHK}
+			WHERE 
+				H_IDX = #{H_IDX}
+		]]>
+	</update>
+	
+	<update id="Admin_updateDetailNotice" parameterType="hashmap">
+		<![CDATA[
+			UPDATE 
+				NOTICE
+			SET
+				HITS = #{HITS},
+				REG = #{REG},
+				TITLE = #{TITLE},
+				COTENT = #{CONTENT},
+				DEL_CHK = #{DEL_CHK}
+			WHERE 
+				IDX = #{IDX}
+		]]>
+	</update>
+	
+	<update id="Admin_updateDetailFaq" parameterType="hashmap">
+		<![CDATA[
+			UPDATE 
+				FAQ
+			SET
+				Q = #{Q},
+				A = #{A},
+				DEL_CHK = #{DEL_CHK}
+			WHERE 
+				IDX = #{IDX}
+		]]>
+	</update>
+	
+	<update id="Admin_updateDetailQna" parameterType="hashmap">
+		<![CDATA[
+			UPDATE 
+				QNA
+			SET
+				TITLE = #{TITLE},
+				CONTENT = #{CONTENT},
+				REG = #{REG},
+				DEL_CHK = #{DEL_CHK}
+			WHERE 
+				IDX = #{IDX}
+		]]>
+	</update>
+	
+	<update id="Admin_updateDetailRating" parameterType="hashmap">
+		<![CDATA[
+			UPDATE 
+				RATING
+			SET
+				COMM = #{COMM},
+				REG = #{REG},
+				RATE1 = #{RATE1},
+				RATE2 = #{RATE2},
+				RATE3 = #{RATE3},
+				RATE4 = #{RATE4},
+				DEL_CHK = #{DEL_CHK}
+			WHERE 
+				NUM = #{NUM}
+		]]>
+	</update>
+</mapper>

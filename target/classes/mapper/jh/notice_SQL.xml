@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="notice">
+	<!-- 사용자 -->
+	<select id="selectNoticeList" parameterType="hashmap" resultType="hashmap">
+		<include refid="common.pagingPre"/>
+		<![CDATA[
+			SELECT 
+				ROW_NUMBER() OVER (ORDER BY N.IDX DESC) RNUM,
+				N.IDX,
+				TITLE,
+				TO_CHAR(N.REG, 'YYYY.MM.DD') AS REG,
+				HITS,F_CHK 
+			FROM 
+				NOTICE N LEFT OUTER JOIN ( 
+					SELECT 
+						IDX,
+						(COUNT(*)) AS F_CHK 
+					FROM 
+						FILES 
+					WHERE 
+						DEL_CHK='N' 
+					GROUP BY 
+						IDX
+				) F 
+				ON N.IDX = F.IDX 
+			WHERE 
+				N.DEL_CHK = 0 
+			ORDER BY
+				N.IDX DESC
+		]]>
+		
+		<include refid="common.pagingPost"/>
+	</select>
+	
+	<update id="updateHits" parameterType="hashmap">
+		<![CDATA[
+			UPDATE 
+				NOTICE 
+			SET
+				HITS = HITS+1 
+			WHERE 
+				IDX = #{IDX}
+		]]>
+	</update>
+	
+	<!-- 사용자, 관리자 공용 -->
+	<select id="selectNoticeDetail" parameterType="hashmap" resultType="hashmap">
+		<![CDATA[
+			SELECT 
+				* 
+			FROM 
+				NOTICE 
+			WHERE 
+				IDX = #{IDX}
+		]]>
+	</select>
+	
+	
+	<!-- 관리자 공용 -->	
+	<select id="selectAdminNoticeList" parameterType="hashmap" resultType="hashmap">
+		<include refid="common.pagingPre"/>
+		<![CDATA[
+			SELECT 
+				ROW_NUMBER() OVER (ORDER BY N.IDX DESC) RNUM,
+				N.IDX,
+				TITLE,
+				TO_CHAR(N.REG, 'YYYY/MM/DD HH24:MI:SS') AS REG,
+				HITS,
+				DEL_CHK,
+				F_CHK 
+			FROM 
+				NOTICE N LEFT OUTER JOIN (
+					SELECT IDX,
+						(COUNT(*)) AS F_CHK 
+					FROM 
+						FILES 
+					WHERE 
+						DEL_CHK='N'
+					GROUP BY 
+						IDX
+				) F 
+				ON 
+				N.IDX = F.IDX 
+			ORDER BY 
+				N.IDX DESC
+		]]>
+		<include refid="common.pagingPost"/>
+	</select>
+	
+	<insert id="insertNotice" parameterType="hashmap" useGeneratedKeys="true" keyProperty="IDX">
+		<selectKey keyProperty="IDX" resultType="string" order="BEFORE">
+		<![CDATA[
+				SELECT 
+					SEQ_NOTICE_IDX.NEXTVAL 
+				FROM 
+					DUAL
+			]]>
+		</selectKey>
+		
+		<![CDATA[
+			INSERT INTO NOTICE (
+				IDX,
+				TITLE,
+				CONTENT,
+				REG,
+				HITS
+			) 
+			VALUES (
+				#{IDX},
+				#{TITLE},
+				#{CONTENT},
+				sysdate,
+				0
+			)
+		]]>
+	</insert>
+	
+	<update id="updateNotice" parameterType="hashmap">
+		<![CDATA[
+			UPDATE 
+				NOTICE 
+			SET 
+				TITLE = #{TITLE},
+				CONTENT = #{CONTENT} 
+			WHERE 
+				IDX = #{IDX}
+		]]>
+	</update>
+	
+	<update id="deleteNotice" parameterType="hashmap">
+		<![CDATA[
+			UPDATE 
+				NOTICE 
+			SET 
+				DEL_CHK = 1 
+			WHERE 
+				IDX = #{IDX}
+		]]>
+	</update>
+</mapper>

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="hplist">
+	<select id="selectAllHpList" parameterType="hashmap" resultType="hashmap">
+		<include refid="common.pagingPre"/>
+		<if test="ID != null">
+		<![CDATA[
+			SELECT
+				ROW_NUMBER() OVER (
+					ORDER BY
+						H.H_IDX DESC) RNUM,
+				H.*,
+				F.ID AS FAV
+			FROM
+			    HOSPITAL H LEFT OUTER JOIN (
+			        select
+			            *
+			        FROM
+			            FAV
+			        WHERE
+			            ID = #{ID}
+			    ) F
+			    on H.H_IDX = F.H_IDX 
+		]]>
+		</if>
+
+		<if test="ID == null">
+		<![CDATA[
+			SELECT
+				ROW_NUMBER() OVER (
+					ORDER BY
+						H.H_IDX DESC) RNUM,
+				H.*
+			FROM
+				 HOSPITAL H
+		]]>
+		</if>
+
+		<![CDATA[
+			WHERE
+			    DEL_CHK = '0'
+		]]>
+		
+		<if test='REG_CHK == "Y"'>
+			<![CDATA[
+				AND REG_CHK = 'Y'
+			]]>
+		</if>
+		
+		<if test='SEARCH_CHK == "Y"'>
+			<![CDATA[
+				AND #{SEARCHTYPE} LIKE '%'||#{SEARCHVALUE}||'%'
+			]]>
+		</if>
+		<include refid="common.pagingPost"/>
+	</select>
+	
+	<select id="selectRateHpList" parameterType="hashmap" resultType="hashmap">
+		<include refid="common.pagingPre"/>
+		<if test="ID != null">
+		<![CDATA[
+			SELECT
+				ROW_NUMBER() OVER (
+					ORDER BY
+						H.H_IDX DESC) RNUM,
+				H.*,
+				F.ID AS FAV,
+				RATE
+			FROM
+			    HOSPITAL H LEFT OUTER JOIN (
+			        select
+			            *
+			        FROM
+			            FAV
+			        WHERE
+			            ID = #{ID}
+			    ) F
+			    on H.H_IDX = F.H_IDX,
+		]]>
+		</if>
+
+		<if test="ID == null">
+		<![CDATA[
+			SELECT
+				ROW_NUMBER()
+					OVER (
+						ORDER BY
+							RATE DESC) RNUM,
+				H.*,
+				RATE
+			FROM
+				 HOSPITAL H,
+		]]>
+		</if>
+
+		<![CDATA[
+				(
+					SELECT
+						H_IDX AS R_IDX,
+						ROUND(SUM((RATE1 + RATE2 + RATE3 + RATE4) / 4) / COUNT(*), 2) AS RATE
+					FROM
+						RATING
+					GROUP BY
+						H_IDX ) R
+			WHERE
+				H.H_IDX = R.R_IDX
+				AND DEL_CHK = '0'
+		]]>
+		
+		<if test='REG_CHK == "Y"'>
+			<![CDATA[
+				AND REG_CHK = 'Y'
+			]]>
+		</if>
+		
+		<if test='SEARCH_CHK == "Y"'>
+			<![CDATA[
+				AND #{SEARCHTYPE} LIKE '%'||#{SEARCHVALUE}||'%'
+			]]>
+		</if>
+		<include refid="common.pagingPost"/>
+	</select>
+	
+	<select id="selectHpDetail" parameterType="hashmap" resultType="hashmap">
+		<![CDATA[
+			SELECT
+				*
+			FROM
+				HOSPITAL
+			WHERE
+				H_IDX = #{H_IDX}
+		]]>
+	</select>
+	
+	<select id="selectAdminHpList" parameterType="hashmap" resultType="hashmap">
+		<include refid="common.pagingPre"/>
+		<![CDATA[
+			SELECT
+				ROW_NUMBER() OVER (
+					ORDER BY
+						H.H_IDX DESC) RNUM,
+				H.*
+			FROM
+				HOSPITAL H
+		]]>
+		<include refid="common.pagingPost"/>
+	</select>
+	
+</mapper>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="common">
+    <select id="selectFileInfo" parameterType="hashmap" resultType="hashmap">
+       <![CDATA[
+           SELECT
+               STORED_FILE_NAME,
+               ORIGINAL_FILE_NAME
+           FROM
+               TB_FILE
+           WHERE
+               IDX = #{IDX}
+       ]]>
+   </select>
+   
+   <sql id="pagingPre">
+       <![CDATA[
+         SELECT
+            AAA.*
+         FROM (
+            SELECT
+               COUNT(*) OVER() AS TOTAL_COUNT,
+               AA.*
+            FROM ( 
+       ]]>
+   </sql>
+    
+   <sql id="pagingPost">
+       <![CDATA[
+             ) AA
+          ) AAA
+       ]]>
+   </sql>
+   <!-- 
+          WHERE
+             AAA.RNUM BETWEEN #{START} AND #{END} -->
+   
+   <select id="selectHPCount" parameterType="hashmap" resultType="hashmap">
+      <![CDATA[
+         SELECT 
+            COUNT(*) AS HPCOUNT 
+         FROM 
+            HOSPITAL
+      ]]>
+   </select>
+   
+   <select id="selectRATE1Count" parameterType="hashmap" resultType="hashmap">
+      <![CDATA[
+         SELECT 
+            COUNT(ID) AS RATECOUNT1 
+         FROM 
+            (SELECT ID FROM RATING GROUP BY ID)
+      ]]>
+   </select>
+   
+   <select id="selectRATE2Count" parameterType="hashmap" resultType="hashmap">
+      <![CDATA[
+         SELECT 
+            COUNT(ID) AS RATECOUNT2 
+         FROM 
+            RATING
+      ]]>
+   </select>
+   
+   <select id="selectMEMBERCount" parameterType="hashmap" resultType="hashmap">
+      <![CDATA[
+         SELECT 
+            COUNT(*)-1 AS MEMBERCOUNT 
+         FROM 
+            MEMBER
+      ]]>
+   </select>
+   
+   <select id="selectReview" parameterType="hashmap" resultType="hashmap">
+      <![CDATA[
+         SELECT 
+            NAME,
+            HOSP,
+            COMM,
+            REG,
+            RATE,
+            RN 
+         FROM ( 
+            SELECT 
+               NAME,
+               HOSP,
+               COMM,
+               TO_CHAR(REG, 'YYYY.MM.DD') AS REG,
+               (RATE1+RATE2+RATE3+RATE4)/4 AS RATE,
+               ROW_NUMBER() OVER (ORDER BY REG DESC) AS RN 
+            FROM 
+               RATING R,
+               HOSPITAL H,
+               MEMBER M 
+            WHERE 
+               R.H_IDX=H.H_IDX AND M.ID=R.ID 
+         )
+         WHERE 
+            RN<=6
+      ]]>
+   </select>
+</mapper>

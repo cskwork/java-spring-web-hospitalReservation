@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="rate">
+	<!-- 만족도 조사가능한  병원리스트 -->
+	<select id="reservList" parameterType="hashmap" resultType="hashmap">
+		<![CDATA[
+			SELECT
+			    AA.H_IDX,
+			    AA.NUM,
+			    AA.ID,
+			    AA.HOSP,
+			    AA.RESERV1,
+			    TO_CHAR(BB.REG,'YYYY/MM/DD') AS REG,
+			    AA.STATE
+			FROM (
+			    SELECT
+			        A.H_IDX,
+			        A.NUM,
+			        A.ID,
+			        A.STATE,
+			        A.RESERV1,
+			        B.HOSP
+			    FROM
+			        RESERVATION A
+			    LEFT OUTER JOIN (
+			        SELECT
+			            H_IDX,
+			            HOSP
+			        FROM
+			            HOSPITAL           
+			    ) B 
+				ON
+					A.H_IDX = B.H_IDX
+				WHERE
+				    ID = #{ID}
+				    AND DEL_CHK = 'A'
+			) AA
+			LEFT OUTER JOIN
+				RATING BB
+			ON
+				AA.NUM = BB.NUM
+		]]>
+	</select>
+	
+	<!-- 후기 작성하기 -->
+	<insert id="insertRating" parameterType="hashmap">
+		<![CDATA[
+			INSERT INTO RATING (
+				H_IDX,
+				ID,
+				RATE1,
+				RATE2,
+				RATE3,
+				RATE4,
+				COMM,
+				REG,
+				NUM
+			) 
+			VALUES (
+				#{H_IDX},
+				#{ID},
+				#{RATE1},
+				#{RATE2},
+				#{RATE3},
+				#{RATE4},
+				#{COMM},
+				SYSDATE,
+				#{NUM}
+			)
+		]]>
+	</insert>
+	
+	<!-- 후기 작성시 상태변경 -->
+	<update id="updateState" parameterType="hashmap">
+		<![CDATA[
+			UPDATE 
+				RESERVATION
+			SET
+				STATE = '완료'
+			WHERE
+				NUM = #{NUM} 
+			AND ID  = #{ID}
+		]]>
+	</update>
+</mapper>

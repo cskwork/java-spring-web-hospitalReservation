@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation/DTD Tiles Configuration2.1//EN"
+"http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+
+<tiles-definitions>
+	<definition name="default" template="/WEB-INF/views/layout.jsp">
+		<put-attribute name="header" value="/WEB-INF/views/header.jsp" />
+		<put-attribute name="footer" value="/WEB-INF/views/footer.jsp" />	
+	</definition>
+	
+	<!-- main -->
+	<definition name="mainForm" extends="default">
+		<!-- 메인 페이지 -->
+		<put-attribute name="body" value="/WEB-INF/views/main.jsp" />
+		
+		<!-- 병원 리스트 -->
+		<put-attribute name="hplist" value="/WEB-INF/views_jw/hplist/List.jsp" />
+		<put-attribute name="hpdetail" value="/WEB-INF/views_jw/hplist/Detail.jsp"></put-attribute>
+		
+		<!-- 로그인 -->
+		<put-attribute name="loginForm" value="/WEB-INF/views_sk/member/login.jsp"></put-attribute>
+		
+		<!-- 진료예약 -->
+		<put-attribute name="reserv" value="/WEB-INF/views_sy/reservation/reserv.jsp"></put-attribute>
+		
+		<!-- Notice -->
+		<put-attribute name="noticeList" value="/WEB-INF/views_jh/notice/List.jsp"></put-attribute>
+		<put-attribute name="noticeDetail" value="/WEB-INF/views_jh/notice/Detail.jsp"></put-attribute>
+		
+		<!-- FAQ -->
+		<put-attribute name="faqList" value="/WEB-INF/views_jh/faq/List.jsp"></put-attribute>
+		
+		<!-- QnA -->
+		<put-attribute name="qnaList" value="/WEB-INF/views_jh/qna/List.jsp"></put-attribute>
+		<put-attribute name="qnaWrite" value="/WEB-INF/views_jh/qna/Write.jsp"></put-attribute>
+		<put-attribute name="qnaDetail" value="/WEB-INF/views_jh/qna/Detail.jsp"></put-attribute>
+		
+		<!-- Mypage --> 
+		<put-attribute name="mypageMain" value="/WEB-INF/views_sy/mypage/mypageMain.jsp"></put-attribute>
+		<put-attribute name="mypageReservList" value="/WEB-INF/views_sy/mypage/reservation.jsp"></put-attribute>
+		<put-attribute name="myFavList" value="/WEB-INF/views_sy/mypage/mypageFavHp.jsp"></put-attribute>
+		<put-attribute name="ratingList" value="/WEB-INF/views_sy/mypage/mypageRate.jsp"></put-attribute>
+		<put-attribute name="ratingWrite" value="/WEB-INF/views_sy/rate/Rate.jsp"></put-attribute>
+	
+		<!-- admin -->
+		<put-attribute name="adminMain" value="/WEB-INF/views_jw/adminMain.jsp"></put-attribute>
+		<put-attribute name="Admin_memberList" value="/WEB-INF/views_sk/member/listAll.jsp"></put-attribute>
+		
+		<!-- guide -->
+		<put-attribute name="searchGuide" value="/WEB-INF/views_jh/guide/searchGuide.jsp"></put-attribute>
+		<put-attribute name="reservationGuide" value="/WEB-INF/views_jh/guide/reservationGuide.jsp"></put-attribute>
+		<put-attribute name="ratingGuide" value="/WEB-INF/views_jh/guide/ratingGuide.jsp"></put-attribute>
+	</definition>
+</tiles-definitions>

@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="qna">
+	<!-- 사용자 -->
+	<select id="selectQnaList" parameterType="hashmap" resultType="hashmap">
+		<include refid="common.pagingPre"/>
+		<![CDATA[
+			SELECT 
+				ROW_NUMBER() OVER (ORDER BY IDX DESC) RNUM,
+				Q.*
+			FROM (
+				SELECT 
+					IDX,
+					TITLE,
+					ID,
+					TO_CHAR(REG, 'YYYY.MM.DD') AS REG,
+					CONTENT,
+					CHK,
+					DEL_CHK,
+					COUNT(*) OVER(PARTITION BY IDX) AS A_CHK 
+				FROM 
+					QNA 
+				WHERE 
+					DEL_CHK = 0 
+				ORDER BY 
+					IDX DESC
+			) Q
+			WHERE 
+				ID = #{ID} 
+				AND CHK = 0
+		]]>
+		
+		<include refid="common.pagingPost"/>
+	</select>
+	
+	<insert id="insertQna" parameterType="hashmap">
+		<![CDATA[
+			INSERT INTO QNA (
+				IDX,
+				TITLE,
+				ID,
+				REG,
+				CONTENT,
+				CHK
+			)
+			VALUES (
+				SEQ_QNA_IDX.NEXTVAL,
+				#{TITLE},
+				#{ID},
+				sysdate,
+				#{CONTENT},
+				0
+			)
+		]]>
+	</insert>
+	
+	<!-- 사용자, 관리자 공용 -->
+	<select id="selectQDetail" parameterType="hashmap" resultType="hashmap">
+		<![CDATA[
+			SELECT 
+				* 
+			FROM 
+				QNA 
+			WHERE 
+				IDX = #{IDX} 
+				AND CHK = 0
+		]]>
+	</select>
+	
+	<select id="selectADetail" parameterType="hashmap" resultType="hashmap">
+		<![CDATA[
+			SELECT 
+				* 
+			FROM 
+				QNA 
+			WHERE 
+				IDX = #{IDX} 
+				AND CHK = 1
+		]]>
+	</select>
+	
+	<update id="updateQna" parameterType="hashmap">
+		<![CDATA[
+			UPDATE 
+				QNA
+			SET 
+				TITLE = #{TITLE},
+				CONTENT = #{CONTENT} 
+			WHERE 
+				IDX = #{IDX} 
+				AND CHK = #{CHK}
+		]]>
+	</update>
+	
+	<update id="deleteQna" parameterType="hashmap">
+		<![CDATA[
+			UPDATE 
+				QNA 
+				SET 
+				DEL_CHK = 1 
+			WHERE 
+				IDX = #{IDX}
+		]]>
+	</update>
+	
+	
+	<!-- 관리자 -->
+	<select id="selectAdminQnaList" parameterType="hashmap" resultType="hashmap">
+		<include refid="common.pagingPre"/>
+		<![CDATA[
+			SELECT 
+				ROW_NUMBER() OVER (ORDER BY IDX DESC) RNUM,
+				IDX,
+				TITLE,
+				ID,
+				REG,
+				CONTENT,
+				A_CHK,
+				DEL_CHK 
+			FROM (
+				SELECT 
+					IDX,
+					TITLE,
+					ID,
+					TO_CHAR(REG, 'YYYY/MM/DD HH24:MI:SS') AS REG,
+					CONTENT,
+					CHK,
+					DEL_CHK,
+					COUNT(*) OVER(PARTITION BY IDX) AS A_CHK 
+				FROM 
+					QNA 
+				ORDER BY 
+					IDX DESC
+			) 
+			WHERE 
+				CHK = 0
+		]]>
+		
+		<include refid="common.pagingPost"/>
+	</select>
+	
+	<insert id="insertAdminQna" parameterType="hashmap">
+		<![CDATA[
+			INSERT INTO QNA (
+				IDX,
+				TITLE,
+				ID,
+				REG,
+				CONTENT,
+				CHK
+			) 
+			VALUES (
+				#{IDX},
+				#{TITLE},
+				'admin',
+				sysdate,
+				#{CONTENT},
+				1
+			)
+		]]>
+	</insert>
+	
+	<delete id="deleteAdminQna" parameterType="hashmap">
+		<![CDATA[
+			DELETE 
+			FROM
+				QNA 
+			WHERE 
+				IDX = #{IDX} 
+				AND CHK = 1
+		]]>
+	</delete>
+</mapper>

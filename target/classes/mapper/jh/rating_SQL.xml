@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="rating">
+	<!-- 관리자만 사용 -->
+	<select id="selectAdminRatingList" parameterType="hashmap" resultType="hashmap">
+		<include refid="common.pagingPre"/>
+		
+		<![CDATA[
+			SELECT 
+				ROW_NUMBER() OVER (ORDER BY H_IDX DESC) RNUM,
+				H_IDX,
+				ID,
+				RATE1,
+				RATE2,
+				RATE3,
+				RATE4,
+				COMM,
+				TO_CHAR(REG, 'YYYY/MM/DD HH24:MI:SS') AS REG,
+				NUM,
+				DEL_CHK				 
+			FROM 
+				RATING 
+			ORDER BY 
+				REG DESC
+		]]>
+		
+		<include refid="common.pagingPost"/>
+	</select>
+</mapper>
