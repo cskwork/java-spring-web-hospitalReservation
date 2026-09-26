@@ -23,7 +23,7 @@ const pages = provenance.pages.map((p) => ({ ...p, html: read(p.output) }));
 const sha = (abs) => crypto.createHash('sha256').update(fs.readFileSync(abs)).digest('hex');
 
 test('every generated page records its original sources, and the hashes match the current originals', () => {
-  assert.equal(pages.length, 16);
+  assert.equal(pages.length, 18);
   const tiles = fs.readFileSync(path.join(WEBAPP, 'WEB-INF/tiles.xml'), 'utf8');
   assert.equal(provenance.tiles.sha256, sha(path.join(WEBAPP, 'WEB-INF/tiles.xml')));
   for (const p of pages) {
@@ -78,7 +78,7 @@ test('generated pages reuse the original template markup and scripts line for li
 test('source-specific markup and original functions are present per page', () => {
   const byOut = Object.fromEntries(pages.map((p) => [p.output, p.html]));
   const expect = {
-    'hospital/main/index.html': ['<section class="section-cta ">', '<h2>사이트 소개</h2>', '<h2>병원 후기</h2>', 'data-n="10"', 'function moveToHpList(obj)', 'id="Modal-6"', '햇살내과의원'],
+    'hospital/main/index.html': ['<main class="care-home">', 'id="careSearch"', '<h2>병원 후기</h2>', 'function findHospital(type, value)', 'data-jsp-foreach="reviewlist"'],
     'hospital/hplist/List/index.html': ['<table id="searchForm">', '<option value="MAJOR">진료과목</option>', 'function fn_selectHpListCallback(data)', '<h2>{{param.boardTitle}}</h2>', 'value="{{param.REG_CHK}}"'],
     'hospital/hplist/HpDetail/1/index.html': ['<table class="board_view" style="margin: auto;">', '<td>햇살내과의원</td>', "<td><input type='button' name='REG' value='예약'></td>", 'var H_IDX = "1";'],
     'hospital/reserv/OpenReserv/index.html': ['<table id="calendar">', 'function makeMonth(year, month', "comAjax.setUrl(\"/hospital/reserv/Reservation\");", "value='{{param.H_IDX}}'"],
@@ -99,7 +99,7 @@ test('no unprocessed JSP remains; runtime tokens only where the page expects the
     const outsideTemplates = p.html.replace(/<template\b[\s\S]*?<\/template>/g, '');
     const tokens = [...outsideTemplates.matchAll(/\{\{(\w+)\.(\w+)\}\}/g)].map((m) => m[1]);
     assert.ok(tokens.every((t) => t === 'param'), `${p.output}: only {{param.*}} outside templates`);
-    if (tokens.length) assert.ok(['/hospital/hplist/List', '/hospital/reserv/OpenReserv'].includes(p.route), p.output);
+    if (tokens.length) assert.ok(['/hospital/hplist/List', '/hospital/reserv/OpenReserv', '/hospital/rate/OpenRating'].includes(p.route), p.output);
   }
 });
 
@@ -153,7 +153,7 @@ test('every server URL in page scripts is mocked or its trigger is absent', () =
     const urls = [...p.html.matchAll(/"(\/hospital\/[\w/]+(?:\.do)?)"/g)].map((m) => m[1])
       .filter((u) => !/\/(css|js|img|demo|vendor)\//.test(u) && !['/hospital/', '/hospital/hplist/', '/hospital/main/'].includes(u));
     for (const u of urls) {
-      if (handled.has(u)) continue;
+      if (handled.has(u.replace(/\/$/, ''))) continue;
       assert.ok(UNREACHABLE[u], `${p.output}: ${u} is neither mocked nor listed as unreachable`);
       assert.ok(!p.html.includes(UNREACHABLE[u][0]), `${p.output}: trigger ${UNREACHABLE[u][0]} for ${u} must not be rendered`);
     }
@@ -161,7 +161,7 @@ test('every server URL in page scripts is mocked or its trigger is absent', () =
     for (const m of p.html.matchAll(/name="(?:mypageList|CustomService|QnaService|GuideService)" id="([^"]+)"/g)) {
       assert.ok(handled.has('/hospital/' + m[1]), `${p.output}: header link ${m[1]} is mocked`);
     }
-    for (const hidden of ['notice/listform', 'faq/listform', 'qna/listform', 'guide/searchGuide', 'mypage/OpenMypageMain', 'rate/RatingList', 'class="point_payment"', 'execDaumPostcode()"']) {
+    for (const hidden of ['notice/listform', 'faq/listform', 'qna/listform', 'guide/searchGuide', 'mypage/OpenMypageMain', 'class="point_payment"', 'execDaumPostcode()"']) {
       assert.ok(!p.html.includes(hidden), `${p.output}: unsupported control ${hidden} hidden`);
     }
   }
@@ -176,6 +176,7 @@ test('all local references resolve to files in dist; unsafe original images are 
     for (const r of refs) assert.ok(fs.existsSync(path.join(DIST, r)), `${p.output}: ${r} exists`);
     assert.doesNotMatch(p.html, /\/hospital\/img\/(?:mainImg|UserImg|on\.png|off\.png)/, p.output);
     for (const m of p.html.matchAll(/<a\b[^>]*href="([^"]*)"/g)) {
+      m[1] = m[1].split('?')[0];
       assert.ok(['#', '#this', '#top'].includes(m[1]) || fs.existsSync(path.join(DIST, m[1], m[1].endsWith('/') ? 'index.html' : '')), `${p.output}: link ${m[1]}`);
     }
   }

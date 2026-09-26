@@ -249,7 +249,7 @@
 			comSubmit.submit();
 		}
 
-		Kakao.init('a2a026028f5ff6b1e76fd91816f13681');
+		Kakao.init('UNCONFIGURED');
 		function LogOut() {
 			Kakao.Auth.logout(function() {
 				console.log("logged out.");

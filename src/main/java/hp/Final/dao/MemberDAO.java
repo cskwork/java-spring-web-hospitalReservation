@@ -35,7 +35,7 @@ public class MemberDAO extends AbstractDAO {
 
 	// 회원정보 상세
 	public Map<String, Object> viewMember(Map<String, Object> map) throws Exception {
-		return (Map<String, Object>) selectOne("member.viewMember", map);
+		return (Map<String, Object>) selectOne("member.login", map);
 	};
 
 	// 회원가입
@@ -55,7 +55,7 @@ public class MemberDAO extends AbstractDAO {
 
 	// 회원탈퇴
 	public List<Map<String, Object>> deleteMember(Map<String, Object> map) throws Exception {
-		return (List<Map<String, Object>>) delete("member.deleteMember", map);
+		if(((Number)update("member.deleteMember",map)).intValue()!=1)throw new IllegalStateException("Member update failed");return java.util.Collections.emptyList();
 	}
 
 	// 이메일 인증번호 생성

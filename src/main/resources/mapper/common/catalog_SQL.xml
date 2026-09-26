@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"><mapper namespace="catalog">
+<select id="list" resultType="hashmap">SELECT * FROM HOSPITAL WHERE DEL_CHK='0' ORDER BY H_IDX</select>
+<insert id="insert" parameterType="hashmap">INSERT INTO HOSPITAL(H_IDX,HOSP,MAJOR,ADDR,TEL,ADDR_GPS,ONHOUR,OFFHOUR,MEAL_TIME,INTERVALL,REG_CHK,DEL_CHK) VALUES(HOSPITAL_SEQ.NEXTVAL,#{HOSP},#{MAJOR},#{ADDR},#{TEL},#{ADDR_GPS},#{ONHOUR},#{OFFHOUR},#{MEAL_TIME},#{INTERVALL},#{REG_CHK},'0')</insert>
+<update id="update" parameterType="hashmap">UPDATE HOSPITAL SET HOSP=#{HOSP},MAJOR=#{MAJOR},ADDR=#{ADDR},TEL=#{TEL},ADDR_GPS=#{ADDR_GPS},ONHOUR=#{ONHOUR},OFFHOUR=#{OFFHOUR},MEAL_TIME=#{MEAL_TIME},INTERVALL=#{INTERVALL},REG_CHK=#{REG_CHK} WHERE H_IDX=#{H_IDX} AND DEL_CHK='0'</update>
+<select id="activeReservations" parameterType="hashmap" resultType="int">SELECT COUNT(*) FROM RESERVATION WHERE H_IDX=#{H_IDX} AND DEL_CHK='B'</select>
+<update id="remove" parameterType="hashmap">UPDATE HOSPITAL SET DEL_CHK='1',REG_CHK='N' WHERE H_IDX=#{H_IDX}</update>
+<delete id="removeFavorites" parameterType="hashmap">DELETE FROM FAV WHERE H_IDX=#{H_IDX}</delete>
+</mapper>

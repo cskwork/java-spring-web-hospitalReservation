@@ -184,3 +184,36 @@ test('손상된 저장값은 초기값으로 되돌리고, 모르는 요청은 �
   assert.ok(MB.isValidState(store.load()));
   assert.throws(() => b.handleAjax('/hospital/member/login', {}), MB.MockError);
 });
+
+test('후기: 4개 평가·내용·지난 방문 소유권, 중복, 영속화와 평균 평점', () => {
+  const {b,store} = backendAt(new Date(2026,8,26));
+  const params={NUM:'1',H_IDX:'3',ID:'demo',RESERV1:'2026/08/14',RATE1:'1',RATE2:'2',RATE3:'3',RATE4:'4',COMM:'새로운 방문 후기'};
+  for(const key of ['RATE1','RATE2','RATE3','RATE4']) assert.throws(()=>b.insertRating({...params,[key]:''}),/네 가지/);
+  for(const bad of ['0','6','1.5','abc']) assert.throws(()=>b.insertRating({...params,RATE1:bad}),/네 가지/);
+  for(const bad of ['', ' '.repeat(4), 'x'.repeat(501)]) assert.throws(()=>b.insertRating({...params,COMM:bad}),/1~500/);
+  for(const bad of [{ID:'sample01'},{NUM:'99'},{H_IDX:'1'},{RESERV1:'2026/08/15'}]) assert.throws(()=>b.insertRating({...params,...bad}),/본인의/);
+  assert.equal(b.state().RATING.length,0,'failed submissions do not mutate');
+  const before=b.selectHpDetail(3).RATE;
+  b.insertRating(params);
+  assert.equal(b.ratingList()[0].STATE,'완료');
+  assert.equal(b.selectHpDetail(3).RATE,Math.round(((before+2.5)/2)*100)/100);
+  assert.equal(b.selectReview()[0].COMM,params.COMM);
+  assert.throws(()=>b.insertRating(params),/이미 작성/);
+  const reloaded=MB.createBackend({fixtures:fx,session:fx.SESSION,store});
+  assert.equal(reloaded.ratingList()[0].STATE,'완료');
+  assert.equal(reloaded.selectCount()[2].RATECOUNT2,fx.RATING.length+1);
+  store.save(fx.SEED_STATE);
+  assert.equal(reloaded.ratingList()[0].STATE,'미완료');
+  assert.equal(reloaded.selectHpDetail(3).RATE,before);
+});
+
+test('후기: 다른 사용자·취소·예정 예약을 평가하지 못하고 이전 저장값은 보존해 확장한다', () => {
+  for(const change of [{ID:'other'},{DEL_CHK:'C'},{DEL_CHK:'B',RESERV1:'2026/10/01'}]) {
+    const seed=structuredClone(fx.SEED_STATE); Object.assign(seed.RESERVATION[0],change);
+    const {b}=backendAt(new Date(2026,8,26),seed);
+    assert.throws(()=>b.insertRating({NUM:1,H_IDX:3,RESERV1:seed.RESERVATION[0].RESERV1}),/본인의/);
+  }
+  const old=structuredClone(fx.SEED_STATE); delete old.RATING; old.POINT=700;
+  const {b}=backendAt(new Date(2026,8,26),old);
+  assert.equal(b.state().POINT,700); assert.deepEqual(b.state().RATING,[]);
+});

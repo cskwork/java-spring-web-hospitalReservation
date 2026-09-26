@@ -33,9 +33,18 @@ public class CustomMapArgumentResolver implements HandlerMethodArgumentResolver{
 			values = request.getParameterValues(key);
 	
 			if(values != null){
-				commandMap.put(key, (values.length > 1) ? values:values[0] );
+				if(java.util.Arrays.asList("NAME","ADDR","HOSP","H_COMM","DOC_COMM","TITLE","CONTENT","Q","A","COMM").contains(key)) {
+                    for(int i=0;i<values.length;i++){if(values[i].length()>4000)throw new IllegalArgumentException("Text is too long");values[i]=org.springframework.web.util.HtmlUtils.htmlEscape(values[i]);}
+                }
+                commandMap.put(key, (values.length > 1) ? values:values[0] );
 			}
 		}
-		return commandMap;
+		String route=request.getRequestURI().substring(request.getContextPath().length());
+        if(route.startsWith("/mypage/")||route.startsWith("/reserv/")||route.startsWith("/rate/")||route.startsWith("/qna/")) {
+            javax.servlet.http.HttpSession session=request.getSession(false);
+            if(session!=null&&session.getAttribute("ID")!=null){commandMap.put("ID",session.getAttribute("ID")); if(route.startsWith("/mypage/"))commandMap.put("IDX",session.getAttribute("IDX"));}
+        }
+        commandMap.getMap().remove("RESET_VERIFIED");commandMap.getMap().remove("SERVER_ADMIN");
+        return commandMap;
 	}
 }

@@ -1,0 +1,547 @@
+[
+  {
+    "path": "/hospital/member/member",
+    "source": "src/main/java/hp/sk/controller/MemberController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/member/list",
+    "source": "src/main/java/hp/sk/controller/MemberController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/member/list2",
+    "source": "src/main/java/hp/sk/controller/MemberController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/member/info",
+    "source": "src/main/java/hp/sk/controller/MemberController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/member/register",
+    "source": "src/main/java/hp/sk/controller/MemberController.java",
+    "method": "GET"
+  },
+  {
+    "path": "/hospital/member/register",
+    "source": "src/main/java/hp/sk/controller/MemberController.java",
+    "method": "POST"
+  },
+  {
+    "path": "/hospital/member/delete",
+    "source": "src/main/java/hp/sk/controller/MemberController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/member/checkId",
+    "source": "src/main/java/hp/sk/controller/MemberController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/member/sendMail",
+    "source": "src/main/java/hp/sk/controller/MemberController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/member/loginForm",
+    "source": "src/main/java/hp/sk/controller/MemberController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/member/resetForm",
+    "source": "src/main/java/hp/sk/controller/MemberController.java",
+    "method": "GET"
+  },
+  {
+    "path": "/hospital/member/logout",
+    "source": "src/main/java/hp/sk/controller/MemberController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/member/kakaoLogin",
+    "source": "src/main/java/hp/sk/controller/MemberController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/member/newPWD",
+    "source": "src/main/java/hp/sk/controller/MemberController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/mypage/mypage",
+    "source": "src/main/java/hp/sy/controller/MypageController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/mypage/OpenMypageMain",
+    "source": "src/main/java/hp/sy/controller/MypageController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/mypage/updateUserInfo",
+    "source": "src/main/java/hp/sy/controller/MypageController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/mypage/selectUserInfo",
+    "source": "src/main/java/hp/sy/controller/MypageController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/mypage/InsertImgform",
+    "source": "src/main/java/hp/sy/controller/MypageController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/mypage/InsertImg",
+    "source": "src/main/java/hp/sy/controller/MypageController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/mypage/DeleteImg",
+    "source": "src/main/java/hp/sy/controller/MypageController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/mypage/deleteForm",
+    "source": "src/main/java/hp/sy/controller/MypageController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/mypage/delete",
+    "source": "src/main/java/hp/sy/controller/MypageController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/mypage/paymentPoint",
+    "source": "src/main/java/hp/sy/controller/MypageController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/mypage/OpenMypageReserv",
+    "source": "src/main/java/hp/sy/controller/MypageController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/mypage/OpenMypageFavhp",
+    "source": "src/main/java/hp/sy/controller/MypageController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/mypage/InsertFav",
+    "source": "src/main/java/hp/sy/controller/MypageController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/mypage/DelFavHp",
+    "source": "src/main/java/hp/sy/controller/MypageController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/rate/rate",
+    "source": "src/main/java/hp/sy/controller/RateController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/rate/RatingList",
+    "source": "src/main/java/hp/sy/controller/RateController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/rate/OpenRating",
+    "source": "src/main/java/hp/sy/controller/RateController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/rate/Rating",
+    "source": "src/main/java/hp/sy/controller/RateController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/reserv/reserv",
+    "source": "src/main/java/hp/sy/controller/ReservController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/reserv/OpenReserv",
+    "source": "src/main/java/hp/sy/controller/ReservController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/reserv/SelectHospitalList",
+    "source": "src/main/java/hp/sy/controller/ReservController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/reserv/SelectMajorList",
+    "source": "src/main/java/hp/sy/controller/ReservController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/reserv/SelectDate",
+    "source": "src/main/java/hp/sy/controller/ReservController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/reserv/ReservDate",
+    "source": "src/main/java/hp/sy/controller/ReservController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/reserv/ReservResult",
+    "source": "src/main/java/hp/sy/controller/ReservController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/reserv/Reservation",
+    "source": "src/main/java/hp/sy/controller/ReservController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/reserv/MyReserv",
+    "source": "src/main/java/hp/sy/controller/ReservController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/reserv/MyPastReserv",
+    "source": "src/main/java/hp/sy/controller/ReservController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/reserv/CancelReserv",
+    "source": "src/main/java/hp/sy/controller/ReservController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/reserv/AdminReservList",
+    "source": "src/main/java/hp/sy/controller/ReservController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/faq/faq",
+    "source": "src/main/java/hp/jh/controller/FaqController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/faq/listform",
+    "source": "src/main/java/hp/jh/controller/FaqController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/faq/list",
+    "source": "src/main/java/hp/jh/controller/FaqController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/admin/faq/admin/faq",
+    "source": "src/main/java/hp/jh/controller/AdminFaqController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/admin/faq/listform",
+    "source": "src/main/java/hp/jh/controller/AdminFaqController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/admin/faq/list",
+    "source": "src/main/java/hp/jh/controller/AdminFaqController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/admin/faq/writeform",
+    "source": "src/main/java/hp/jh/controller/AdminFaqController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/admin/faq/write",
+    "source": "src/main/java/hp/jh/controller/AdminFaqController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/admin/faq/modifyform",
+    "source": "src/main/java/hp/jh/controller/AdminFaqController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/admin/faq/modify",
+    "source": "src/main/java/hp/jh/controller/AdminFaqController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/admin/faq/delete",
+    "source": "src/main/java/hp/jh/controller/AdminFaqController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/admin/qna/admin/qna",
+    "source": "src/main/java/hp/jh/controller/AdminQnaController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/admin/qna/listform",
+    "source": "src/main/java/hp/jh/controller/AdminQnaController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/admin/qna/list",
+    "source": "src/main/java/hp/jh/controller/AdminQnaController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/admin/qna/detail",
+    "source": "src/main/java/hp/jh/controller/AdminQnaController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/admin/qna/writeform",
+    "source": "src/main/java/hp/jh/controller/AdminQnaController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/admin/qna/write",
+    "source": "src/main/java/hp/jh/controller/AdminQnaController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/admin/qna/modifyform",
+    "source": "src/main/java/hp/jh/controller/AdminQnaController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/admin/qna/modify",
+    "source": "src/main/java/hp/jh/controller/AdminQnaController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/admin/qna/delete",
+    "source": "src/main/java/hp/jh/controller/AdminQnaController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/admin/qna/admindelete",
+    "source": "src/main/java/hp/jh/controller/AdminQnaController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/guide/guide",
+    "source": "src/main/java/hp/jh/controller/GuideController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/guide/searchGuide",
+    "source": "src/main/java/hp/jh/controller/GuideController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/guide/reservationGuide",
+    "source": "src/main/java/hp/jh/controller/GuideController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/guide/ratingGuide",
+    "source": "src/main/java/hp/jh/controller/GuideController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/admin/admin",
+    "source": "src/main/java/hp/jh/controller/AdminRatingController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/admin/rating/listform",
+    "source": "src/main/java/hp/jh/controller/AdminRatingController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/admin/rating/list",
+    "source": "src/main/java/hp/jh/controller/AdminRatingController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/qna/qna",
+    "source": "src/main/java/hp/jh/controller/QnaController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/qna/listform",
+    "source": "src/main/java/hp/jh/controller/QnaController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/qna/list",
+    "source": "src/main/java/hp/jh/controller/QnaController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/qna/detail",
+    "source": "src/main/java/hp/jh/controller/QnaController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/qna/writeform",
+    "source": "src/main/java/hp/jh/controller/QnaController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/qna/write",
+    "source": "src/main/java/hp/jh/controller/QnaController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/qna/modifyform",
+    "source": "src/main/java/hp/jh/controller/QnaController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/qna/modify",
+    "source": "src/main/java/hp/jh/controller/QnaController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/qna/delete",
+    "source": "src/main/java/hp/jh/controller/QnaController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/admin/notice/admin/notice",
+    "source": "src/main/java/hp/jh/controller/AdminNoticeController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/admin/notice/listform",
+    "source": "src/main/java/hp/jh/controller/AdminNoticeController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/admin/notice/list",
+    "source": "src/main/java/hp/jh/controller/AdminNoticeController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/admin/notice/detail",
+    "source": "src/main/java/hp/jh/controller/AdminNoticeController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/admin/notice/writeform",
+    "source": "src/main/java/hp/jh/controller/AdminNoticeController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/admin/notice/write",
+    "source": "src/main/java/hp/jh/controller/AdminNoticeController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/admin/notice/modifyform",
+    "source": "src/main/java/hp/jh/controller/AdminNoticeController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/admin/notice/modify",
+    "source": "src/main/java/hp/jh/controller/AdminNoticeController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/admin/notice/delete",
+    "source": "src/main/java/hp/jh/controller/AdminNoticeController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/notice/notice",
+    "source": "src/main/java/hp/jh/controller/NoticeController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/notice/listform",
+    "source": "src/main/java/hp/jh/controller/NoticeController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/notice/list",
+    "source": "src/main/java/hp/jh/controller/NoticeController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/notice/detail",
+    "source": "src/main/java/hp/jh/controller/NoticeController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/main",
+    "source": "src/main/java/hp/common/controller/MainController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/common/downloadFile",
+    "source": "src/main/java/hp/common/controller/CommonController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/admin/catalog/admin/catalog",
+    "source": "src/main/java/hp/common/controller/HospitalCatalogController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/admin/catalog/list",
+    "source": "src/main/java/hp/common/controller/HospitalCatalogController.java",
+    "method": "POST"
+  },
+  {
+    "path": "/hospital/admin/catalog/remove",
+    "source": "src/main/java/hp/common/controller/HospitalCatalogController.java",
+    "method": "POST"
+  },
+  {
+    "path": "/hospital/api/password/api/password",
+    "source": "src/main/java/hp/common/controller/PasswordResetController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/api/password/request",
+    "source": "src/main/java/hp/common/controller/PasswordResetController.java",
+    "method": "POST"
+  },
+  {
+    "path": "/hospital/api/password/confirm",
+    "source": "src/main/java/hp/common/controller/PasswordResetController.java",
+    "method": "POST"
+  },
+  {
+    "path": "/hospital/admin/admin",
+    "source": "src/main/java/hp/jw/controller/AdminController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/admin/AdminMultiModify",
+    "source": "src/main/java/hp/jw/controller/AdminController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/hplist/hplist",
+    "source": "src/main/java/hp/jw/controller/HpListController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/hplist/test",
+    "source": "src/main/java/hp/jw/controller/HpListController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/hplist/List",
+    "source": "src/main/java/hp/jw/controller/HpListController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  },
+  {
+    "path": "/hospital/hplist/selectHpList",
+    "source": "src/main/java/hp/jw/controller/HpListController.java",
+    "method": "POST"
+  },
+  {
+    "path": "/hospital/hplist/HpDetail",
+    "source": "src/main/java/hp/jw/controller/HpListController.java",
+    "method": "legacy mixed; security filter constrains mutations"
+  }
+]

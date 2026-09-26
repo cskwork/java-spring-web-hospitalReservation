@@ -283,3 +283,24 @@ img[name='FAVCheck'] {
 		margin-top: 12px;
 	}
 }
+
+/* Mock mode has no location provider: reclaim map space rather than show an empty panel. */
+.gridForm { display:block; }
+.gridForm>#listForm { width:100%; margin:0; }
+.gridForm>div:has(.floatMenu),#searchForm tr:nth-child(2) { display:none; }
+.center_right_top { background:#edf3f0!important; }
+.footer { margin-top:30px!important; }
+.footer #contact { padding:24px 0; }
+.footer #contact .section-title,.footer #contact .col-md-4 { display:none; }
+.footer h2 { font-size:20px; }
+.demo-notice { position:static; font-size:12px; background:#1d4945; }
+
+.footer #contact .col-md-6 { width:100%; }
+.footer #contact .section-text { display:flex; flex-wrap:wrap; gap:6px 20px; align-items:baseline; }
+.footer #contact .section-text h4 { font-size:14px; margin:0; }
+.footer #contact .section-text p { margin:0; font-size:12px; line-height:1.6; }
+.footer #back-top { display:none; }
+.footer>.Tiles_wrap>p { margin:10px 0; font-size:12px; }
+
+/* Approved public medical service world: source screens retain controls and contracts. */
+:root{--care-paper:#fff;--care-ink:#142d40;--care-accent:#006b65;--care-muted:#4c626c;--care-line:#d4dfe3}body{background:#fff!important;color:#142d40!important}.complete-nav{display:flex;flex-wrap:wrap;gap:12px 24px;max-width:1200px;padding:18px 24px;margin:auto;border-bottom:1px solid #d4dfe3}.complete-nav a{font-size:15px;color:#006b65;text-decoration:none}.care-eyebrow,.care-step-number{display:none}.care-home{background:#fff!important}.care-search-panel,.care-next{background:#f3f6f7!important;border-radius:10px!important;box-shadow:none!important}.care-search-panel button{background:#006b65!important}input,select,textarea{accent-color:#006b65;caret-color:#006b65}a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #188a84;outline-offset:3px}::selection{background:#c5eae6;color:#142d40}.Tiles_wrap{max-width:1152px!important;width:calc(100% - 40px)!important}.board_view,.board_list{width:100%!important}table{font-variant-numeric:tabular-nums}@media(max-width:760px){.complete-nav{gap:10px 16px}.Tiles_wrap{overflow-x:auto}.care-layout{grid-template-columns:1fr!important}}

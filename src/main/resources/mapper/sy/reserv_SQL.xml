@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="reserv">
+<select id="lockHospital" parameterType="hashmap" resultType="hashmap">SELECT * FROM HOSPITAL WHERE H_IDX=#{H_IDX} FOR UPDATE</select>
+<select id="takenSlots" parameterType="hashmap" resultType="hashmap">SELECT RESERV2 FROM RESERVATION WHERE H_IDX=#{H_IDX} AND RESERV1=#{RESERV1} AND DEL_CHK='B'</select>
 	<!-- 예약하기폼에서 예약가능한 병원리스트 -->
 	<select id="selectHpList" parameterType="hashmap" resultType="hashmap">
 		<![CDATA[
@@ -17,12 +19,6 @@
 		<if test="H_IDX != null">
 		<![CDATA[
 			AND H_IDX = #{H_IDX}						
-		]]>
-		</if>
-		
-		<if test="ID != admin">
-		<![CDATA[
-			AND ID = #{ID}						
 		]]>
 		</if>
 	</select>
@@ -65,7 +61,7 @@
 				AND R.H_IDX = H.H_IDX
 		]]>
 		
-		<if test="ID != admin">
+		<if test="ID != null">
 		<![CDATA[
 			AND R.ID = #{ID}
 		]]>
@@ -97,7 +93,7 @@
 				AND R.H_IDX = H.H_IDX
 		]]>
 		
-		<if test="ID != admin">
+		<if test="ID != null">
 		<![CDATA[
 			AND R.ID = #{ID}						
 		]]>
@@ -160,7 +156,7 @@
 		        
 		    WHERE 
 		        H_IDX = #{H_IDX}
-		        AND ID = #{ID}
+		        AND ID = #{ID} AND DEL_CHK='B' AND TO_DATE(RESERV1 || ' ' || RESERV2, 'YYYY/MM/DD HH24:MI') > SYSDATE + 30/1440
 		]]>
 	</update>
 	

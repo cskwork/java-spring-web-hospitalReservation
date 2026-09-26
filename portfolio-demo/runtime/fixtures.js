@@ -98,6 +98,7 @@
   var SEED_STATE = {
     version: 1,
     POINT: 1000,
+    RATING: [],
     RESERV_SEQ: 2,
     RESERVATION: [
       { NUM: 1, H_IDX: 3, ID: 'demo', CURED: '정형외과', RESERV1: '2026/08/14', RESERV2: '10:30', DEL_CHK: 'A', STATE: '미완료' }

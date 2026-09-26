@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="rate">
+<select id="lockVisit" parameterType="hashmap" resultType="hashmap">SELECT * FROM RESERVATION WHERE NUM=#{NUM} AND ID=#{ID} FOR UPDATE</select>
 	<!-- 만족도 조사가능한  병원리스트 -->
 	<select id="reservList" parameterType="hashmap" resultType="hashmap">
 		<![CDATA[

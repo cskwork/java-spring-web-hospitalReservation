@@ -11,16 +11,16 @@
 			<table id="searchForm">
 				<tr>
 					<td colspan="2">
-						<select id="SEARCHTYPE">
-							<option value="">검색</option>
+						<select id="SEARCHTYPE" aria-label="검색 기준">
+							<option value="">전체 병원</option>
 							<option value="HOSP">병원명</option>
 							<option value="ADDR">위치</option>
 							<option value="MAJOR">진료과목</option>
 						</select>
-						<input type="text" id="SEARCHVALUE" >
+						<input type="search" id="SEARCHVALUE" aria-label="검색어" value="<c:out value='${SEARCHVALUE}'/>" placeholder="병원명, 지역 또는 진료과목">
 						<input type="button" id="SEARCH" value="검색">
 					</td>
-				</tr>		
+				</tr>
 				<tr>
 					<td>
 						<select id="distance">
@@ -47,54 +47,63 @@
 				<colgroup>
 					<col />
 				</colgroup>
-				<tbody>		
+				<tbody>
 				</tbody>
 			</table>
-			
+
 			<div>
 				<div class="floatMenu">
 					<table id="daumMap"></table>
 				</div>
 			</div>
-			
+
 			<div id="PAGE_NAVI" align="center"></div>
 		</div>
 		<input type="hidden" id="ID" name="ID" value="${ID }">
 		<input type="hidden" id="REG_CHK" name="REG_CHK" value="${REG_CHK }">
 		<input type="hidden" id="LIST" name="LIST" value="${LIST }" />
+		<input type="hidden" id="INITIAL_SEARCHTYPE" value="<c:out value='${SEARCHTYPE}'/>" />
 		<input type="hidden" id="QUERY" name="QUERY" value="${QUERY }" />
 		<input type="hidden" id="PAGE_INDEX" name="PAGE_INDEX" value="1"/>
 
 		<%@ include file="/WEB-INF/include/include-body.jspf" %>
-	
+
 	</div>
-	
+
 	<script type="text/javascript" >
 		//로딩된 후 한번 실행하는 구간
 		var floatPosition = parseInt($(".floatMenu").css('top'));
-		
+
 		$(document).ready(function() {
 			window.onload = function() {
-				fn_selectHpList(1);
-			};	
-			
+				var search = new URLSearchParams(location.search);
+                if (!$('#LIST').val()) $('#LIST').val('selectHpList');
+                if (!$('#QUERY').val()) $('#QUERY').val('hplist.selectAllHpList');
+                if (!$('#REG_CHK').val()) $('#REG_CHK').val('N');
+                if ($('#INITIAL_SEARCHTYPE').val()) $('#SEARCHTYPE').val($('#INITIAL_SEARCHTYPE').val());
+                if (search.has('SEARCHTYPE')) $('#SEARCHTYPE').val(search.get('SEARCHTYPE'));
+                if (search.has('SEARCHVALUE')) $('#SEARCHVALUE').val(search.get('SEARCHVALUE'));
+                fn_selectHpList(1);
+            };
+
 			//윈도우가 스크롤 될때마다 실행되는 구간
 			$(window).scroll(function(){
 				// 현재 스크롤 위치를 가져온다.
 				var scrollTop = $(window).scrollTop();
 				var newPosition = scrollTop + $("#listForm").offset().top;
-		 	
+
 				if(0 < $("#listForm").height() + $("#listForm").offset().top - 400 && $("#listForm").height() + $("#listForm").offset().top - 400 < newPosition)
 					newPosition = $("#listForm").height() + $("#listForm").offset().top - 400;
-				
+
 				newPosition += "px";
-				
+
 				$(".floatMenu").stop().animate({
 					"top" : newPosition
 				}, 500);
 			}).scroll();
-			
-			$("#SEARCH").on("click", function(e) {
+
+			$('#SEARCHVALUE').on('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); $('#SEARCH').click(); } });
+            $("#SEARCH").on("click", function(e) {
 				e.preventDefault();
 				if($("#SEARCHTYPE").val() == "" && $.trim($("#SEARCHVALUE").val()) != "") {
 					Alert.render("검색 조건(병원명/위치/진료과목)을 선택해주세요.");
@@ -103,39 +112,39 @@
 				$("#PAGE_INDEX").val(1);
 				fn_selectHpList(1);
 			});
-				
+
 			$("#distance").change(function(e) {
  				e.preventDefault();
-				getLocation(); 
+				getLocation();
 			});
 
 			$(document).mousemove(function(event) {
 				mouse(event);
 			});
-		});   
-		 
+		});
+
 		function fn_openBoardDetail(obj) {
 			var comSubmit = new ComSubmit();
 			comSubmit.setUrl("<c:url value='/hplist/HpDetail' />");
-			comSubmit.addParam("H_IDX", obj.parent().parent().parent().find("#H_IDX").val()); 
-			
+			comSubmit.addParam("H_IDX", obj.parent().parent().parent().find("#H_IDX").val());
+
 			comSubmit.submit();
 		}
 
 		var pagerow = 10;
 		var pageno = 0;
-		
+
 		function fn_selectHpList(pageNo) {
 			// 검색 기능
 			var searchType = $("#SEARCHTYPE").val();
 			var searchValue = $("#SEARCHVALUE").val();
-			
+
 			// 페이징
 			pageno = pageNo;
 			var list = $("#LIST").val();
 			var query = $("#QUERY").val();
-			var reg_chk = $("#REG_CHK").val();		
-			
+			var reg_chk = $("#REG_CHK").val();
+
 			var comAjax = new ComAjax();
 			comAjax.setUrl("<c:url value='/hplist/" + list + "' />");
 			comAjax.setCallback("fn_selectHpListCallback");
@@ -148,22 +157,22 @@
 				comAjax.addParam("SEARCHVALUE", searchValue);
 				comAjax.addParam("SEARCH_CHK", "Y");
 			}
-			
-			if(reg_chk == 'Y') 
-				comAjax.addParam("REG_CHK", reg_chk);	
-			
+
+			if(reg_chk == 'Y')
+				comAjax.addParam("REG_CHK", reg_chk);
+
 			comAjax.ajax();
 		}
 
 		var paramData = null;
-		
+
 		function fn_selectHpListCallback(data) {
 			if(typeof(data) == "object") {
 				paramData = data;
 			}
-			
+
 			var total = paramData.TOTAL;
-			
+
 			var params = {
 				divId : "PAGE_NAVI",
 				pageIndex : "PAGE_INDEX",
@@ -171,22 +180,22 @@
 				eventName : "fn_selectHpListCallback",
 				recordCount : pagerow
 			};
-			
+
 			gfn_renderPaging(params);
 
 			var body = $("#listForm>tbody");
 			body.empty();
-			
+
 			var num = 0;
 			var first = ($("#PAGE_INDEX").val() - 1) * pagerow;
 			var last = $("#PAGE_INDEX").val() * pagerow;
-			
+
 			var str = "";
 
-			$.each(paramData.list, function(key, value) {				
+			$.each(paramData.list, function(key, value) {
 				if(num == paramData.list.length - 1)
 					return false;
-				
+
 				if(first <= num && num < last) {
 					str += ""
 					+ "<tr>"
@@ -194,27 +203,27 @@
 					+ "<table id='listform" + ++num + "' class='listform" + (num % 10 == 1 ? "_border" : "") +"'>"
 						+ "<tr>"
 							+ "<td id='" + num + "' align='left'>"
-							+	 "<b><font size='6'><a href='#this' id='" + num + "' name='title'>" + (((pageno - 1) * pagerow) + num) + ". " + (value.HOSP.length <= 10 ? value.HOSP : value.HOSP.substring(0, 9) + "...") + "</a></font></b>"
+							+	 "<b><font size='6'><a href='#this' id='" + num + "' name='title'>" + value.HOSP + "</a></font></b>"
 								+ "<input type='hidden' id='H_IDX' value='" + value.H_IDX + "' >"
 							+ "</td>";
-					
+
 					if(value.REG_CHK == 'Y' && $("#ID").val() != null && $("#ID").val() != "")
-						str += "<td id='" + num + "' align='right' style='width: 200px; padding: 0 3px 0 0'><input type='button' name='REG' value='예약가능'></td>";
-							
-					str += "" 
-						+ "</tr>"
-						+ "<tr>"
-							+ "<td id='" + num + "' align='left'>▶진료과목: " + value.MAJOR + "</td>";
-					
-					if($("#ID").val() != null && $("#ID").val() != "")	
-						str += "<td id='" + num + "' align='right' style='width: 200px; padding: 0 3px 0 0'><img name='FAVCheck' data-fav='" + (value.FAV == null ? "N" : "Y") + "' src='" + (value.FAV == null ? "/hospital/img/off.png" : "/hospital/img/on.png") + "' alt='관심병원' style='height: 24px'></img></td>";
-						
+						str += "<td id='" + num + "' align='right' style='width: 200px; padding: 0 3px 0 0'><input type='button' name='REG' value='예약하기'></td>";
+
 					str += ""
 						+ "</tr>"
 						+ "<tr>"
-							+ "<td id='" + num + "' align='left'>▶전화번호: " + value.TEL + "</td>"
-							+ "<td id='" + num + "' align='right' style='width: 200px; padding: 0 3px 0 0'>▶진료시간: " + value.HOUR + "</td>";
-						
+							+ "<td id='" + num + "' align='left'>진료과목 ·  " + value.MAJOR + (value.RATE != null ? " · ★ " + value.RATE : "") + "</td>";
+
+					if($("#ID").val() != null && $("#ID").val() != "")
+						str += "<td id='" + num + "' align='right' style='width: 200px; padding: 0 3px 0 0'><img name='FAVCheck' data-fav='" + (value.FAV == null ? "N" : "Y") + "' src='" + (value.FAV == null ? "/hospital/img/off.png" : "/hospital/img/on.png") + "' alt='관심병원' style='height: 24px'></img></td>";
+
+					str += ""
+						+ "</tr>"
+						+ "<tr>"
+							+ "<td id='" + num + "' align='left'>전화 ·  " + value.TEL + "</td>"
+							+ "<td id='" + num + "' align='right' style='width: 200px; padding: 0 3px 0 0'>진료시간 ·  " + value.HOUR + "</td>";
+
 					if(value.DISTANCE != 0) {
 						if(value.DISTANCE >= 1000) {
 							str += "<td id='" + num + "' align='right'>▶거리: " + (value.DISTANCE / 1000).toFixed(2) + "(km)" + "</td>";
@@ -222,19 +231,19 @@
 							str += "<td id='" + num + "' align='right'>▶거리: " + value.DISTANCE + "(m)" + "</td>";
 						}
 					}
-					
+
 					str += "</tr>"
 						+ "<tr>"
-							+ "<td id='" + num + "' colspan='2'>▶주소: " + value.ADDR + "</td>"
+							+ "<td id='" + num + "' colspan='2'>주소 ·  " + value.ADDR + "</td>"
 						+ "</tr>"
 					+ "</table>"
 					+ "</td>"
 					+ "</tr>";
-				
+
 				} else {
 					++num;
 				}
-				
+
 				if(num == paramData.list.length)
 					return false;
 			});
@@ -243,29 +252,32 @@
 				str = "<tr><td class='Hp_list'>검색 결과가 없습니다. 다른 검색어나 검색 조건으로 다시 찾아보세요.</td></tr>";
 
 			body.append(str);
+            $('#listForm').attr('aria-label', '병원 검색 결과 ' + total + '건');
+            $('<p class="care-result-count" role="status">').text('검색 결과 ' + total + '개 병원').insertBefore('#listForm');
+            $('.care-result-count').not(':last').remove();
 
 			map_location();
-			
+
 			if ($("#address").val() != "")
-				my_location($("#address").val()); 
-			
+				my_location($("#address").val());
+
 			// 데이터 갯수에 따라  footer css 변경
 			$(".footer").css("margin-top" ,"100px");
-			
+
 			if(paramData.list.length - 1 < 4) {
 				$(".footer").css("margin-top" ,"300px");
-			} 
-			
+			}
+
 			$("a[name='title']").on("click", function(e) {
 				e.preventDefault();
 				fn_openBoardDetail($(this));
 			});
-			 
+
 			$("input[name='REG']").on("click", function(e) {
 				e.preventDefault();
 				fn_MovetoReservation($(this));
 			});
-			
+
 			$("img[name='FAVCheck']").on("click", function() {
 				var URL;
 				if($(this).attr("data-fav") == "N") {
@@ -277,7 +289,7 @@
 					$(this).attr("data-fav", "N");
 					$(this).attr("src", "/hospital/img/off.png");
 				}
-				
+
 				var comAjax = new ComAjax();
 	            comAjax.setUrl("<c:url value='" + URL +"' />");
 				comAjax.setCallback("");
@@ -289,14 +301,14 @@
 
 		function fn_MovetoReservation(obj) {
 			var H_IDX = obj.parent().parent().find("#H_IDX").val();
-			
+
 			if($("#ID").val() == "") {
 	            alert("로그인이 필요한 서비스입니다.");
-	         } else {	         
+	         } else {
 				var comSubmit = new ComSubmit();
 				comSubmit.setUrl("<c:url value='/reserv/OpenReserv' />");
 				comSubmit.addParam("H_IDX", H_IDX);
-				
+
 				comSubmit.submit();
 	         }
 		}
@@ -304,11 +316,11 @@
 		function getLocation() {
 			var body = $("#listForm>tbody");
 			body.empty();
-						
+
 		    var list = $("#LIST").val();
 			var query = $("#QUERY").val();
-			var reg_chk = $("#REG_CHK").val();		
-			
+			var reg_chk = $("#REG_CHK").val();
+
             var comAjax = new ComAjax();
             comAjax.setUrl("<c:url value='/hplist/" + list + "' />");
 			comAjax.setCallback("fn_selectHpListCallback");
@@ -318,31 +330,31 @@
 			comAjax.addParam("CURRNET_LAT", Latitude);
 			comAjax.addParam("CURRNET_LON", Longitude);
 			comAjax.addParam("LIMIT_DISTANCE", $('#distance option:selected').val());
-			
-			if(reg_chk == 'Y') 
+
+			if(reg_chk == 'Y')
 				comAjax.addParam("REG_CHK", reg_chk);
-			
+
 			comAjax.ajax();
 	   }
-		
+
 		var map = null;
 		var marker = new Array();
-		
+
 		function map_location() {
 			var lat = paramData.list[paramData.list.length - 1].C_LAT/* 33.450701 */;
 			var lon = paramData.list[paramData.list.length - 1].C_LON/* 126.570667 */;
-			
+
 			// 지도생성
 		    $('#daumMap div').remove();
 		    var container = document.getElementById('daumMap');
-		    
+
 		    coords = new daum.maps.LatLng(lat, lon);
-		    
+
 		    var options = {
 				center: coords,
 				level: paramData.list[paramData.list.length - 1].zoom
 		    };
-		
+
 			map = new daum.maps.Map(container, options);
 			// -----------
 
@@ -350,17 +362,17 @@
 			var i = 0;
  			$.each(paramData.list, function(key, value) {
  				marker[i] = new daum.maps.Marker({
- 				    map: map, 
+				    map: map,
  				    position: new daum.maps.LatLng(value.LAT, value.LON)
  				});
- 				
+
  				var infowindow = new daum.maps.InfoWindow({
 					content: value.HOSP // 인포윈도우에 표시할 내용
  			    });
- 				 
+
  				daum.maps.event.addListener(marker[i], 'mouseover', makeOverListener(i));
  			    /* daum.maps.event.addListener(marker[i], 'click', makeOutListener()); */
- 				
+
 				if(++i == paramData.list.length)
 					return false;
 			});
@@ -368,26 +380,26 @@
 			if($("#address").val() != "")
  				my_marker();
 		}
-		
-		// 인포윈도우를 표시하는 클로저를 만드는 함수입니다 
+
+		// 인포윈도우를 표시하는 클로저를 만드는 함수입니다
 		function makeOverListener(i) {
 		    return function() {
 			  map_Overlay(i);
 		    };
 		}
-		
+
 		var overlay = null;
 		function map_Overlay(targ) {
 			var num;
 			if(targ.id == null)
 				num = targ;
-			else 
+			else
 				num = targ.id - 1;
-			
-			
+
+
 			if(overlay != null)
 				closeOverlay();
-			
+
 			// 커스텀 오버레이에 표시할 컨텐츠 입니다
 			var content = '' +
 				'<div class="Map_wrap">' +
@@ -418,22 +430,22 @@
 			daum.maps.event.addListener(marker[num], 'click', function() {
 			    overlay.setMap(map);
 			});
-			
+
 			$("a[name='m_title']").on("click", function(e) {
 				e.preventDefault();
 				fn_openBoardDetail($(this));
-			}); 
+			});
 		}
-		
-		// 커스텀 오버레이를 닫기 위해 호출되는 함수입니다 
+
+		// 커스텀 오버레이를 닫기 위해 호출되는 함수입니다
 		function closeOverlay() {
-		    overlay.setMap(null);     
+		    overlay.setMap(null);
 		}
-		
+
 		var targ;
 		function mouse(event) {
 			var e = window.event;
-			
+
 			if (e.target) {
 				targ = e.target;
 			} else if (e.srcElement) {
@@ -441,11 +453,11 @@
 			}
 			if(targ.id > 0)
 				map_Overlay(targ);
-			
+
 			var tname;
 			tname = targ.tagName;
 		}
-		
+
 		// 다음 주소찾기 API
 		function execDaumPostcode() {
 			new daum.Postcode({
@@ -456,52 +468,52 @@
 					} else {
 						fullAddr = data.jibunAddress;
 					}
-					
+
 					document.getElementById('address').value = fullAddr;
-					
+
 					my_location(fullAddr);
 				}
 			}).open();
 		}
-		
+
 		var Latitude = null;
 		var Longitude = null;
 		var coords = null;
-		
+
 		// 주소-좌표 변환 객체를 생성합니다
 		function my_location(Addr) {
 			var geocoder = new daum.maps.services.Geocoder();
 			geocoder.addressSearch(Addr, function(result, status) {
 				if (status === daum.maps.services.Status.OK) {
 					coords = new daum.maps.LatLng(result[0].y, result[0].x);
-					
+
 					Latitude = result[0].y;
 					Longitude = result[0].x;
-					
+
 					my_marker();
 				}
 			});
 		}
-		
+
 		var user_marker = null;
 		var markerImage = null;
 		var imageSrc = 'http://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png';
 	    var imageSize = new daum.maps.Size(24, 35);
-	    
+
 	    // 내 위치를 표현하는 이미지 마커
 		function my_marker() {
 			// 마커의 이미지정보를 가지고 있는 마커이미지를 생성합니다
 			markerImage = new daum.maps.MarkerImage(imageSrc, imageSize);
-			
+
 			if(user_marker != null)
 				user_marker.setVisible(false);
-			
+
 			user_marker = new daum.maps.Marker({
 				map: map,
 				position: coords,
-				image: markerImage // 마커이미지 설정 
+				image: markerImage // 마커이미지 설정
 			});
-			
+
 			// 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
 			map.setCenter(coords);
 		}

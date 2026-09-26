@@ -46,7 +46,8 @@ public class RateController {
 
 	// 만족도 조사하기
 	@RequestMapping("/Rating")
-	public String rating(CommandMap commandMap, Model model) throws Exception {
+	public String rating(CommandMap commandMap, Model model, HttpSession session) throws Exception {
+		hp.common.security.SessionIdentity.bind(commandMap.getMap(), session);
 		rateService.insertRating(commandMap.getMap());
 
 		model.addAttribute("ID", commandMap.getMap().get("ID"));

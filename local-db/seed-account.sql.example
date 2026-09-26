@@ -1,0 +1,4 @@
+-- Empty local schema only. Supply a PasswordHash.hash() PBKDF2 value, never plaintext.
+INSERT INTO MEMBER(IDX,ID,PWD,NAME,POINT) VALUES(1,'admin','REPLACE_WITH_PBKDF2_HASH','합성 관리자',0);
+INSERT INTO MEMBER(IDX,ID,PWD,NAME,POINT) VALUES(2,'local-patient','REPLACE_WITH_PBKDF2_HASH','합성 환자',500);
+COMMIT;

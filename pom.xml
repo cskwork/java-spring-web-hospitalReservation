@@ -14,40 +14,13 @@
 		<org.slf4j-version>1.6.6</org.slf4j-version>
 	</properties>
 	
-	<repositories>
-		<repository>
-			<id>mesir-repo</id> 
-			<url>http://mesir.googlecode.com/svn/trunk/mavenrepo</url> 
-		</repository>
-		
-		<repository>
-			<id>mvn2</id>
-			<url>http://repo1.maven.org/maven2/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-		
-		<repository>
-			<id>egovframe</id>
-			<url>http://www.egovframe.go.kr/maven/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
+	<repositories><repository><id>central</id><url>https://repo.maven.apache.org/maven2</url></repository></repositories>
 	
-	<dependencies>
+	<dependencies><dependency><groupId>org.apache.tomcat.embed</groupId><artifactId>tomcat-embed-jasper</artifactId><version>9.0.98</version><scope>test</scope></dependency><dependency><groupId>com.h2database</groupId><artifactId>h2</artifactId><version>2.2.224</version><scope>test</scope></dependency><dependency><groupId>org.springframework</groupId><artifactId>spring-test</artifactId><version>${org.springframework-version}</version><scope>test</scope></dependency>
 		<dependency>
-			<groupId>com.oracle</groupId>
-			<artifactId>ojdbc14</artifactId>
-			<version>10.2.0.4.0</version>
+			<groupId>com.oracle.database.jdbc</groupId>
+			<artifactId>ojdbc8</artifactId>
+			<version>19.3.0.0</version>
 		</dependency>
 		
 		<!-- Spring -->
@@ -175,9 +148,9 @@
 		<!-- Web -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
+			<artifactId>javax.servlet-api</artifactId>
 			<scope>provided</scope>
-			<version>2.5</version>
+			<version>4.0.1</version>
 		</dependency>
         
 		<dependency> 
@@ -260,11 +233,7 @@
 		</dependency>
 		
 		<!-- EgovProperty -->
-		<dependency>
-			<groupId>egovframework.rte</groupId>
-			<artifactId>egovframework.rte.fdl.property</artifactId>  
-			<version>2.7.0</version>
-		</dependency>
+		<!-- Unused EgovProperty dependency removed: no source/config references; retired HTTP repository. -->
 		
 		<!-- Log4j -->
 		<dependency>
@@ -338,7 +307,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.7</version>
+			<version>4.13.2</version>
 			<scope>test</scope>
 		</dependency>	  
 		
@@ -384,7 +353,7 @@
     	<defaultGoal>install</defaultGoal>
 		<directory>${basedir}/target</directory>
 		<finalName>hospital</finalName>
-		<plugins>
+		<plugins><plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-war-plugin</artifactId><version>3.4.0</version></plugin><plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-surefire-plugin</artifactId><version>3.2.5</version></plugin>
 			<plugin>
 				<artifactId>maven-eclipse-plugin</artifactId>
 				<version>2.9</version>

@@ -79,18 +79,15 @@ test('메인: 원본 메인 화면이 모의 데이터로 뜨고, 버튼은 모�
   const p = await open('/hospital/main/');
   const $ = p.$;
   assert.equal($('.demo-notice').text().includes('실제 예약이 이루어지지 않습니다'), true);
-  assert.equal($('.stat-number').first().attr('data-n'), '10');
-  assert.equal($('.ot-portfolio-item').length, 6);
-  assert.equal($('.modal').length, 6);
-  assert.equal($('#qna').length, 0);
-  await p.click('#reserv');
-  await p.click('a[name="HpList"]#ALL');
-  assert.deepEqual(p.navigations[0], '/hospital/reserv/MyReserv/?STEP=reserv');
-  const list = new URL(p.navigations[1], ORIGIN);
+  assert.equal($('.care-review').length, 6);
+  assert.equal($('.stat-number,.slider-container,.partner-logo').length, 0);
+  assert.equal($('.care-next a').length, 3);
+  $('#careQuery').val('소아'); $('#careType').val('MAJOR'); $('#careSearch').trigger('submit');
+  const list = new URL(p.navigations[0], ORIGIN);
   assert.equal(list.pathname, '/hospital/hplist/List/');
-  assert.equal(list.searchParams.get('boardTitle'), '전체 병원');
-  assert.equal(p.navigations.length, 2, 'each click navigates once (duplicate main.jsp binding removed)');
-  assert.equal(list.searchParams.get('QUERY'), 'hplist.selectAllHpList');
+  assert.equal(list.searchParams.get('SEARCHTYPE'), 'MAJOR');
+  assert.equal(list.searchParams.get('SEARCHVALUE'), '소아');
+  assert.equal(p.navigations.length, 1);
   clean(p, 'main');
   p.close();
 });
@@ -106,7 +103,7 @@ test('병원 목록: 원본 콜백이 목록을 그리고, 검색·빈 결과·�
   $('#SEARCHTYPE').val('MAJOR');
   $('#SEARCHVALUE').val('소아');
   await p.click('#SEARCH');
-  assert.deepEqual([...$("a[name='title']").map((i, a) => $(a).text()).get()], ['1. 새싹소아과의원', '2. 강변어린이병원']);
+  assert.deepEqual([...$("a[name='title']").map((i, a) => $(a).text()).get()], ['새싹소아과의원', '강변어린이병원']);
 
   $('#SEARCHTYPE').val('HOSP');
   $('#SEARCHVALUE').val('없는병원');
@@ -331,4 +328,82 @@ test('모의 처리되지 않은 요청은 명시적으로 실패한다', async 
   assert.throws(() => { const s = new w.ComSubmit(); s.setUrl('/hospital/qna/writeform'); s.submit(); }, /지원하지 않는 기능/);
   assert.equal(p.navigations.length, 0);
   p.close();
+});
+
+test('후기: 지난 방문 목록 → 네 항목 검증 → 저장 → 재로딩 완료와 홈·상세 평점 반영 → 초기화', async () => {
+  const list = await open('/hospital/rate/RatingList/');
+  assert.equal(list.$('a[name=rate]').length,1);
+  await list.click('a[name=rate]');
+  const target=list.navigations[0]; clean(list,'rating-list'); list.close();
+  const form=await open(target);
+  form.window.fn_Rating();
+  assert.match(form.$('#rateError').text(),/네 가지/);
+  assert.equal(form.state().RATING.length,0);
+  for(let i=1;i<=4;i++) form.$('input[name=rate'+i+'][value=5]').prop('checked',true);
+  form.$('#COMM').val('좋은 방문 경험 <script>bad</script>'); form.window.fn_Rating();
+  assert.equal(form.state().RATING.length,1);
+  form.window.fn_Rating(); assert.equal(form.state().RATING.length,1,'double click stays single');
+  assert.equal(form.navigations[0],'/hospital/rate/RatingList/?saved=1');
+  const saved=form.storage(); clean(form,'rating-form'); form.close();
+  const done=await open('/hospital/rate/RatingList/?saved=1',{storage:saved});
+  assert.equal(done.$('a[name=rate]').length,0); assert.match(done.$('#ratingSaved').text(),/저장되었습니다/);
+  assert.match(done.$('.RateList').text(),/작성 완료/); clean(done,'rating-done'); done.close();
+  const repeat=await open(target,{storage:saved}); assert.equal(repeat.$('#rate').prop('disabled'),true); clean(repeat,'rating-repeat'); repeat.close();
+  const home=await open('/hospital/main/',{storage:saved}); assert.match(home.$('.care-review').first().text(),/좋은 방문 경험 <script>bad<\/script>/);
+  assert.equal(home.$('.care-review script').length,0); clean(home,'review-home'); home.close();
+  const detail=await open('/hospital/hplist/HpDetail/3/',{storage:saved}); assert.equal(detail.$('[data-hospital-rate]').text(),'4.63 / 5'); clean(detail,'review-detail');
+  await detail.click('#demoReset'); assert.equal(detail.storage(),null); detail.close();
+  const reset=await open('/hospital/rate/RatingList/'); assert.equal(reset.$('a[name=rate]').length,1); clean(reset,'review-reset'); reset.close();
+});
+
+test('잘못된 후기 직접 진입은 저장 불가이고 홈 진료과 검색이 목록에 반영된다', async()=>{
+  const bad=await open('/hospital/rate/OpenRating/?NUM=99&H_IDX=3&RESERV1=2026%2F08%2F14');
+  assert.equal(bad.$('#rate').prop('disabled'),true); assert.match(bad.$('#rateError').text(),/본인의/); clean(bad,'rating-invalid');bad.close();
+  const list=await open('/hospital/hplist/List/?SEARCHTYPE=MAJOR&SEARCHVALUE=소아');
+  assert.equal(list.$('a[name=title]').length,2); clean(list,'home-search');list.close();
+});
+
+test('예약: 목록에서 선택한 병원은 다시 클릭하지 않아도 진료과가 열린다', async()=>{
+  const p=await open('/hospital/reserv/OpenReserv/?H_IDX=1');
+  await tick();
+  assert.equal(p.$('#hp td.selected').length,1);
+  assert.equal(p.$('#major a[name=major]').text(),'내과');
+  clean(p,'preselected-hospital');p.close();
+});
+
+test('홈 평가우수 링크는 원본 QUERY 계약으로 평점순 목록을 연다', async()=>{
+  const home=await open('/hospital/main/');
+  const href=home.$('.care-section-heading>a').attr('href'); home.close();
+  const list=await open(href);
+  assert.equal(list.$('#QUERY').val(),'hplist.selectRateHpList');
+  assert.equal(list.$('a[name=title]').length,8);
+  assert.equal(list.$('a[name=title]').first().text(),'하얀미소치과');
+  clean(list,'home-rated-link');list.close();
+});
+
+test('후기 저장 거절은 입력을 보존하고 버튼을 다시 사용할 수 있게 한다', async()=>{
+  const p=await open('/hospital/rate/OpenRating/?NUM=1&H_IDX=3&RESERV1=2026%2F08%2F14');
+  for(let i=1;i<=4;i++) p.$('input[name=rate'+i+'][value=4]').prop('checked',true);
+  p.$('#COMM').val('재시도할 후기'); p.$('#NUM').val('999'); p.window.fn_Rating();
+  assert.match(p.$('#rateError').text(),/본인의/); assert.equal(p.$('#rate').prop('disabled'),false);
+  assert.equal(p.$('#COMM').val(),'재시도할 후기'); assert.equal(p.state().RATING.length,0);
+  p.$('#NUM').val('1');p.window.fn_Rating();assert.equal(p.state().RATING.length,1);
+  clean(p,'rating-retry');p.close();
+});
+
+test('원본 ComSubmit: 공백 후기 거절 후 재시도해도 RATE 파라미터는 하나씩만 전송한다', async()=>{
+  const p=await open('/hospital/rate/OpenRating/?NUM=1&H_IDX=3&RESERV1=2026%2F08%2F14');
+  // Execute the actual source implementation instead of the mock ComSubmit.
+  p.window.eval(fs.readFileSync(path.join(DIST,'hospital/js/common.js'),'utf8'));
+  const posts=[];
+  p.window.HTMLFormElement.prototype.submit=function(){ posts.push([...new p.window.FormData(this).entries()]); };
+  for(let i=1;i<=4;i++) p.$('input[name=rate'+i+'][value=4]').prop('checked',true);
+  p.$('#COMM').val('   ');p.window.fn_Rating();
+  assert.equal(p.$('#commonForm input').length,0);
+  assert.equal(posts.length,0);
+  p.$('#COMM').val('정상 후기');p.window.fn_Rating();
+  assert.equal(posts.length,1);
+  for(let i=1;i<=4;i++) assert.deepEqual(posts[0].filter(([key])=>key==='RATE'+i).map(([,v])=>v),['4']);
+  assert.equal(posts[0].filter(([key])=>key==='COMM').length,1);
+  clean(p,'original-submit-retry');p.close();
 });

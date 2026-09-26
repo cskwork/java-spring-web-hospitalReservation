@@ -23,7 +23,7 @@
 
 <!-- 다음 지도 -->
 <script src="http://dmaps.daum.net/map_js_init/postcode.v2.js"></script>
-<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=bac8fb41651ac31b88722cdd52a7da6a&libraries=services"></script>
+<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=UNCONFIGURED&libraries=services"></script>
 <script src="http://dmaps.daum.net/map_js_init/postcode.v2.js"></script>
 	
 <!-- iamport.payment.js -->

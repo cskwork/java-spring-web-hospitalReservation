@@ -49,6 +49,7 @@ public class MypageServiceImpl implements MypageService {
 
 			detail.put("BMI", bmi);
 		}
+		detail.remove("PWD");detail.remove("ID_SESSIONK");detail.remove("JUMIN");
 		resultMap.put("detail", detail);
 
 		return resultMap;
@@ -78,9 +79,11 @@ public class MypageServiceImpl implements MypageService {
 
 		map.put("IMG_NAME", imgname);
 		map.put("IMG_SIZE", multipartFile.getSize());
-		map.put("IDX", session.getAttribute("IDX"));
+		hp.common.security.SessionIdentity.bind(map,session);
 
-		multipartFile.transferTo(new File(IMGPath + imgname));
+		if(multipartFile==null||multipartFile.getSize()>200000||!("image/png".equals(multipartFile.getContentType())||"image/jpeg".equals(multipartFile.getContentType())))throw new IllegalArgumentException("PNG/JPEG under 200KB required");
+        java.awt.image.BufferedImage image=javax.imageio.ImageIO.read(multipartFile.getInputStream());if(image==null||image.getWidth()>4096||image.getHeight()>4096)throw new IllegalArgumentException("Invalid image");
+        javax.imageio.ImageIO.write(image,"png",new File(IMGPath,imgname));
 
 		mypageDao.insertIdIMG(map);
 	}
@@ -93,7 +96,7 @@ public class MypageServiceImpl implements MypageService {
 		File file = new File(IMGPath + imgname);
 		file.delete();
 
-		map.put("IDX", session.getAttribute("IDX"));
+		hp.common.security.SessionIdentity.bind(map,session);
 
 		mypageDao.deleteUserIMG(map);
 	}

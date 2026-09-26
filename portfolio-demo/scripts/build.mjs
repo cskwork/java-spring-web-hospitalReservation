@@ -53,15 +53,19 @@ const buildBackend = MB.createBackend({
 });
 
 const PAGES = [
+  { route: '/hospital/rate/RatingList', out: 'hospital/rate/RatingList/index.html', body: 'ratingList',
+    controller: 'hp.sy.controller.RateController#ratingList', model: { list: runtimeList() } },
+  { route: '/hospital/rate/OpenRating', out: 'hospital/rate/OpenRating/index.html', body: 'ratingWrite',
+    controller: 'hp.sy.controller.RateController#openRating', model: { NUM: param('NUM'), H_IDX: param('H_IDX'), RESERV1: param('RESERV1') } },
   {
     route: '/hospital/main', out: 'hospital/main/index.html', body: 'body',
     controller: 'hp.common.controller.MainController#mainForm',
-    model: { list: buildBackend.selectCount(), reviewlist: buildBackend.selectReview() },
+    model: { list: buildBackend.selectCount(), reviewlist: runtimeList() },
   },
   {
     route: '/hospital/hplist/List', out: 'hospital/hplist/List/index.html', body: 'hplist',
     controller: 'hp.jw.controller.HpListController#openHospitalPage',
-    model: { boardTitle: param('boardTitle'), LIST: param('LIST'), QUERY: param('QUERY'), REG_CHK: param('REG_CHK'), ADDR: '' },
+    model: { boardTitle: param('boardTitle'), LIST: param('LIST'), QUERY: param('QUERY'), REG_CHK: param('REG_CHK'), SEARCHTYPE: param('SEARCHTYPE'), SEARCHVALUE: param('SEARCHVALUE'), ADDR: '' },
   },
   ...fixtures.HOSPITAL.map((h) => ({
     route: '/hospital/hplist/HpDetail', out: `hospital/hplist/HpDetail/${h.H_IDX}/index.html`, body: 'hpdetail',
@@ -285,6 +289,21 @@ const redirect = (to) =>
 write('index.html', redirect('/hospital/main/'));
 write('hospital/index.html', redirect('/hospital/main/'));
 
+// Newly authored compatibility surfaces retain the original module routes; tracked separately from recovered JSP pages.
+const compatibility = require('../runtime/modules.js').routes;
+const shell = fs.readFileSync(path.join(WEBAPP, 'WEB-INF/views/compat/workspace.html'), 'utf8');
+write('hospital/workspace/index.html', shell);
+for (const [view, route] of Object.entries(compatibility)) write(route.slice(1)+'/index.html', shell.replace('data-initial-view="search"', `data-initial-view="${view}"`));
+const aliases={
+ 'notice/listform':'notice','notice/detail':'notice','faq/listform':'faq','qna/listform':'qna','qna/writeform':'qna','qna/detail':'qna','qna/modifyform':'qna',
+ 'admin/notice/listform':'notice','admin/notice/writeform':'notice','admin/notice/detail':'notice','admin/notice/modifyform':'notice',
+ 'admin/faq/listform':'faq','admin/faq/writeform':'faq','admin/faq/detail':'faq','admin/faq/modifyform':'faq',
+ 'admin/qna/listform':'qna','admin/qna/writeform':'qna','admin/qna/detail':'qna','admin/qna/modifyform':'qna',
+ 'admin/rating/listform':'admin','member/list':'admin','member/info':'admin',
+ 'guide/reservationGuide':'guide','guide/ratingGuide':'guide','mypage/InsertImgform':'profile'};
+for(const [route,view] of Object.entries(aliases))write('hospital/'+route+'/index.html',shell.replace('data-initial-view="search"',`data-initial-view="${view}"`));
+for (const f of ['modules.js','workspace.js','workspace.css']) copy(path.join(DEMO_DIR,'runtime',f), 'hospital/demo/'+f);
+write('hospital/demo/module-manifest.json', JSON.stringify({implementation:'new compatibility UI reusing original service contracts',routes:compatibility,source:'src/main/webapp/WEB-INF/views/compat/workspace.html'},null,2));
 write('hospital/demo/provenance.json', JSON.stringify(provenance, null, 2) + '\n');
 
 // 공개 산출물에 앱 키 등 비밀값이 남지 않았는지 확인

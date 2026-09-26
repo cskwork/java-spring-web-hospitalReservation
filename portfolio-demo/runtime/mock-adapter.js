@@ -16,6 +16,19 @@
   var fixtures = window.DrHerFixtures;
   var $ = window.jQuery;
   var notices = [];
+  document.addEventListener('DOMContentLoaded', function () {
+    try {
+      var full=JSON.parse(window.localStorage.getItem(STORAGE_KEY)||'null');
+      if(full&&full.members){
+        var current=routeOfPage(),views={'/hospital/main':'search','/hospital/hplist/List':'search','/hospital/hplist/HpDetail':'detail','/hospital/reserv/OpenReserv':'detail','/hospital/reserv/MyReserv':'reservations','/hospital/reserv/MyPastReserv':'past','/hospital/rate/RatingList':'past','/hospital/rate/OpenRating':'past','/hospital/mypage/OpenMypageFavhp':'favorites'};
+        var id=new URLSearchParams(window.location.search).get('H_IDX')||window.location.pathname.split('/').filter(Boolean).slice(-1)[0];
+        if(views[current]){demo.navigate('/hospital/workspace/?view='+views[current]+(views[current]==='detail'?'&H_IDX='+encodeURIComponent(id):''));return;}
+      }
+    } catch(e) { /* existing storage validation below presents recovery */ }
+    var nav = document.createElement('nav'); nav.className = 'complete-nav'; nav.setAttribute('aria-label','전체 업무');
+    nav.innerHTML = '<a href="/hospital/workspace/?view=search">전체 병원 찾기</a><a href="/hospital/workspace/?view=accounts">계정·로그인</a><a href="/hospital/workspace/?view=profile">건강수첩</a><a href="/hospital/workspace/?view=points">포인트</a><a href="/hospital/workspace/?view=notice">공지사항</a><a href="/hospital/workspace/?view=faq">FAQ</a><a href="/hospital/workspace/?view=qna">문의</a><a href="/hospital/workspace/?view=admin">관리자</a><a href="/hospital/workspace/?view=guide">이용 가이드</a>';
+    document.body.insertBefore(nav, document.body.firstChild);
+  });
   var memoryFallback = null;
   var STORAGE_WARNING = '브라우저 저장소를 사용할 수 없어 새로고침하면 데모 데이터가 사라집니다.';
 
@@ -64,8 +77,9 @@
 
   // 요청 파라미터가 없을 때 컨트롤러에 넘어가던 값의 기본값 (header.jsp moveToHpList 의 '전체 병원')
   var PARAM_DEFAULTS = {
-    '/hospital/hplist/List': { boardTitle: '전체 병원 검색', LIST: 'selectHpList', QUERY: 'hplist.selectAllHpList', REG_CHK: 'N' },
-    '/hospital/reserv/OpenReserv': { H_IDX: '' }
+    '/hospital/hplist/List': { boardTitle: '전체 병원 검색', LIST: 'selectHpList', QUERY: 'hplist.selectAllHpList', REG_CHK: 'N', SEARCHTYPE: '', SEARCHVALUE: '' },
+    '/hospital/reserv/OpenReserv': { H_IDX: '' },
+    '/hospital/rate/OpenRating': { NUM: '', H_IDX: '', RESERV1: '' }
   };
 
   function requestParams(route) {
@@ -103,6 +117,14 @@
     // 원본 ComSubmit 의 폼 POST 를 정적 화면 이동으로 바꾼다.
     submit: function (url, pairs) {
       var params = toObject(pairs);
+      if (url === '/hospital/rate/Rating') {
+        try { backend.insertRating(params); }
+        catch (e) { var error = document.getElementById('rateError'); if (error) error.textContent = e.message; return false; }
+        return demo.navigate('/hospital/rate/RatingList/?saved=1');
+      }
+      if (url === '/hospital/rate/OpenRating' && !backend.ratingReservation(params)) {
+        showMessage('본인의 지난 방문을 목록에서 선택해주세요.'); return false;
+      }
       if (url === '/hospital/reserv/CancelReserv') {
         var r = backend.cancelReserv(params);
         if (r.blocked.length) window.alert('예약 시간 30분 전부터는 취소할 수 없는 예약이 있어 제외했습니다.');
@@ -147,7 +169,7 @@
     },
 
     reset: function () {
-      if (!window.confirm('데모에서 만든 예약·관심병원을 모두 지우고 처음 상태로 되돌릴까요?')) return;
+      if (!window.confirm('데모에서 만든 예약·관심병원·후기를 모두 지우고 처음 상태로 되돌릴까요?')) return;
       memoryFallback = null;
       try { window.localStorage.removeItem(STORAGE_KEY); } catch (e) { /* 저장소 없음 */ }
       demo.navigate('/hospital/main/');
@@ -161,7 +183,7 @@
     this.pairs = [];
     this.setUrl = function (url) { this.url = url; };
     this.addParam = function (key, value) { this.pairs.push([key, value === undefined || value === null ? '' : String(value)]); };
-    this.submit = function () { demo.submit(this.url, this.pairs); };
+    this.submit = function () { return demo.submit(this.url, this.pairs); };
   };
 
   window.ComAjax = function () {
@@ -207,6 +229,17 @@
   };
 
   document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('[data-hospital-rate]').forEach(function (el) {
+      var h = backend.selectHpDetail(el.getAttribute('data-hospital-rate'));
+      el.textContent = h && h.RATE !== null ? h.RATE + ' / 5' : '아직 평가 없음';
+    });
+    if (routeOfPage() === '/hospital/rate/OpenRating') {
+      var visit = backend.ratingReservation(requestParams(routeOfPage()));
+      if (!visit || visit.STATE === '완료') {
+        document.getElementById('rateError').textContent = visit ? '이미 작성한 후기입니다. 목록에서 완료 상태를 확인해주세요.' : '본인의 지난 방문을 목록에서 선택해주세요.';
+        document.getElementById('rate').disabled = true;
+      }
+    }
     var btn = document.getElementById('demoReset');
     if (btn) btn.addEventListener('click', demo.reset);
   });

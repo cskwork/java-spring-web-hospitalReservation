@@ -136,6 +136,8 @@
 					$(this).parent().addClass("selected");
 					fn_selectMajor($(this));
 				});
+                // A hospital chosen on its detail/list page stays selected here.
+                if ($('.reserv > #H_IDX').val() && data.list.length === 1) $("a[name='hosp']").first().trigger('click');
 
 				}
 		}

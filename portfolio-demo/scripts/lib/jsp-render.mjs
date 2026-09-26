@@ -123,7 +123,7 @@ function evalJs(js, scope) {
 
 // ---------- 파서 ----------
 
-const TAG_RE = /<(\/?)(c:(?:if|choose|when|otherwise|forEach)|tiles:insertAttribute)\b((?:[^>"']|"[^"]*"|'[^']*')*?)(\/?)>/g;
+const TAG_RE = /<(\/?)(c:(?:if|choose|when|otherwise|forEach|out)|tiles:insertAttribute)\b((?:[^>"']|"[^"]*"|'[^']*')*?)(\/?)>/g;
 
 function parseAttrs(s) {
   const out = {};
@@ -226,6 +226,12 @@ export function createRenderer({ webappRoot, contextPath, tilesDefinition, patch
     if (n.type === 'text') return renderText(n.value, scope, file);
     const kids = (s = scope) => renderNodes(n.children, s, file, hooks);
     switch (n.tag) {
+      case 'c:out': {
+        if (n.attrs.escapeXml === 'false') throw new JspError(`${file}: unescaped c:out is unsupported`);
+        const expr = (n.attrs.value || '').match(/^\$\{([^}]*)\}$/);
+        if (!expr) throw new JspError(`${file}: c:out requires one EL value`);
+        return evalOut(expr[1], scope, file);
+      }
       case 'c:if': {
         const t = evalTest(n.attrs.test, scope, file);
         if (t.runtime) throw new JspError(`${file}: <c:if> on runtime value (${n.attrs.test})`);

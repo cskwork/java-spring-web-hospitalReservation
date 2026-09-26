@@ -149,14 +149,18 @@ public class AdminServiceImpl implements AdminService {
 	}
 
 	@Override
+	@org.springframework.transaction.annotation.Transactional(rollbackFor=Exception.class)
 	public void AdminMultiModify(List<Map<String, Object>> list, String URL, String TYPE) throws Exception {
-		String queryID = "";
+		if("reserv/AdminReservList".equals(URL)) {
+            for(Map<String,Object> p:list){Map<String,Object> original=adminDAO.lockReservation(p);if(original==null)throw new IllegalArgumentException("Reservation not found");String next=String.valueOf(p.get("DEL_CHK"));if(!java.util.Arrays.asList("A","C").contains(next))throw new IllegalArgumentException("Invalid transition");if(next.equals(original.get("DEL_CHK")))continue;if(!"B".equals(original.get("DEL_CHK")))throw new IllegalStateException("Reservation already closed");if("A".equals(next)&&String.valueOf(original.get("RESERV1")).compareTo(new java.text.SimpleDateFormat("yyyy/MM/dd").format(new java.util.Date()))>0)throw new IllegalArgumentException("Future visit cannot be completed");p.put("ID",original.get("ID"));if(adminDAO.transitionReservation(p)!=1)throw new IllegalStateException("Concurrent reservation change");if("C".equals(next))adminDAO.refund(p);}return;
+        }
+        String queryID = "";
 		
 		if (TYPE.equals("Multi")) {
 			if (URL.equals("member/list2"))
 				queryID = "admin.Admin_updateMultiMember";
 			else if (URL.equals("hplist/selectHpList"))
-				queryID = "admin.Admin_updateAdminHp";
+				queryID = "admin.Admin_updateMultiHp";
 			else if (URL.equals("reserv/AdminReservList"))
 				queryID = "admin.Admin_updateMultiReserv";
 			else if (URL.equals("admin/notice/list"))
@@ -184,9 +188,12 @@ public class AdminServiceImpl implements AdminService {
 				queryID = "admin.Admin_updateDetailRating";
 		}
 
+		if(queryID.isEmpty())throw new IllegalArgumentException("Unknown administrative operation");
+        if(list.size()>100)throw new IllegalArgumentException("At most 100 rows per operation");
 		for (Map<String, Object> tmpMap : list) {
+            for(String key:new String[]{"NAME","ADDR","HOSP","H_COMM","DOC_COMM","TITLE","CONTENT","Q","A","COMM"})if(tmpMap.get(key)!=null)tmpMap.put(key,org.springframework.web.util.HtmlUtils.htmlEscape(String.valueOf(tmpMap.get(key))));
 			if (tmpMap.get("PWD") != null && !tmpMap.get("PWD").equals("비공개"))
-				tmpMap.put("PWD", MD5Hash.getEncMD5((String) tmpMap.get("PWD")));
+				tmpMap.put("PWD", hp.common.security.PasswordHash.hash((String) tmpMap.get("PWD")));
 
 			if (tmpMap.get("REG") != null)
 				tmpMap.put("REG", new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").parse((String) tmpMap.get("REG")));

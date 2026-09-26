@@ -42,6 +42,8 @@
 
   // ComSubmit 이 이동하던 원본 URL 중 데모가 화면으로 제공하는 것
   var PAGE_ROUTES = [
+    '/hospital/rate/RatingList',
+    '/hospital/rate/OpenRating',
     '/hospital/main',
     '/hospital/hplist/List',
     '/hospital/hplist/HpDetail',
@@ -53,6 +55,7 @@
 
   // 화면 없이 처리 후 다른 화면으로 redirect 하던 원본 URL
   var ACTION_ROUTES = {
+    '/hospital/rate/Rating': '/hospital/rate/RatingList',
     '/hospital/reserv/CancelReserv': '/hospital/reserv/MyReserv',     // "redirect:/reserv/MyReserv"
     '/hospital/mypage/DelFavHp': '/hospital/mypage/OpenMypageFavhp'   // "redirect:OpenMypageFavhp"
   };
@@ -163,6 +166,10 @@
   function isValidState(s) {
     return !!s && s.version === 1 && typeof s.POINT === 'number' && typeof s.RESERV_SEQ === 'number' &&
       Array.isArray(s.RESERVATION) && Array.isArray(s.FAV) &&
+      (s.RATING === undefined || (Array.isArray(s.RATING) && s.RATING.every(function (r) {
+        return r && typeof r.NUM === 'number' && typeof r.COMM === 'string' && typeof r.REG === 'string' &&
+          [r.RATE1, r.RATE2, r.RATE3, r.RATE4].every(function (v) { return Number.isInteger(v) && v >= 1 && v <= 5; });
+      }))) &&
       s.RESERVATION.every(function (r) {
         return r && typeof r.NUM === 'number' && /^\d{4}\/\d{2}\/\d{2}$/.test(r.RESERV1) && /^\d{2}:\d{2}$/.test(r.RESERV2) &&
           ['A', 'B', 'C'].indexOf(r.DEL_CHK) > -1;
@@ -181,6 +188,7 @@
         s = clone(fx.SEED_STATE);
         store.save(s);
       }
+      if (!Array.isArray(s.RATING)) { s.RATING = []; store.save(s); }
       return s;
     }
 
@@ -193,7 +201,7 @@
 
     function rateOf(hIdx) {
       // hplist_SQL.xml selectRateHpList: ROUND(SUM((RATE1+RATE2+RATE3+RATE4)/4)/COUNT(*), 2)
-      var rows = fx.RATING.filter(function (r) { return String(r.H_IDX) === String(hIdx); });
+      var rows = fx.RATING.concat(state().RATING).filter(function (r) { return String(r.H_IDX) === String(hIdx); });
       if (!rows.length) return null;
       var sum = rows.reduce(function (acc, r) { return acc + (r.RATE1 + r.RATE2 + r.RATE3 + r.RATE4) / 4; }, 0);
       return Math.round((sum / rows.length) * 100) / 100;
@@ -217,7 +225,7 @@
         var r = clone(h);
         var fav = favs.some(function (f) { return String(f.H_IDX) === String(h.H_IDX) && f.ID === session.ID; });
         r.FAV = fav ? session.ID : null;
-        if (query === 'hplist.selectRateHpList') r.RATE = rateOf(h.H_IDX);
+        r.RATE = rateOf(h.H_IDX);
         return r;
       });
       if (query === 'hplist.selectRateHpList') {
@@ -266,6 +274,7 @@
       var h = hospital(hIdx);
       if (!h) return null;
       var r = clone(h);
+      r.RATE = rateOf(h.H_IDX);
       r.HOUR = formatHour(r.ONHOUR, r.OFFHOUR);
       delete r.ONHOUR;
       delete r.OFFHOUR;
@@ -275,11 +284,11 @@
     // ---------- 메인 (MainController.mainForm) ----------
     function selectCount() {
       var raters = {};
-      fx.RATING.forEach(function (r) { raters[r.ID] = true; });
+      fx.RATING.concat(state().RATING).forEach(function (r) { raters[r.ID] = true; });
       return [
         { HPCOUNT: fx.HOSPITAL.length },
         { RATECOUNT1: Object.keys(raters).length },
-        { RATECOUNT2: fx.RATING.length },
+        { RATECOUNT2: fx.RATING.length + state().RATING.length },
         { MEMBERCOUNT: fx.MEMBER.length - 1 }
       ];
     }
@@ -287,7 +296,7 @@
     function selectReview() {
       var names = {};
       fx.MEMBER.forEach(function (m) { names[m.ID] = m.NAME; });
-      return fx.RATING.slice()
+      return fx.RATING.concat(state().RATING).slice()
         .sort(function (a, b) { return a.REG < b.REG ? 1 : a.REG > b.REG ? -1 : 0; })
         .slice(0, 6)
         .map(function (r, i) {
@@ -419,6 +428,40 @@
       return { cancelled: cancelled, blocked: blocked };
     }
 
+    // RateController / RateServiceImpl: insertRating followed by updateState.
+    // Local demo validation only; this is not a claim about the original server.
+    function ratingReservation(map) {
+      var s = state(); pastReserv(s, nowFn());
+      return s.RESERVATION.find(function (r) {
+        return String(r.NUM) === String(map.NUM) && r.ID === session.ID && r.DEL_CHK === 'A' &&
+          String(r.H_IDX) === String(map.H_IDX) && r.RESERV1 === map.RESERV1;
+      });
+    }
+    function insertRating(map) {
+      var visit = ratingReservation(map);
+      if (!visit || (map.ID && map.ID !== session.ID)) throw new MockError('본인의 지난 방문만 평가할 수 있습니다.');
+      var s = state();
+      if (visit.STATE === '완료' || s.RATING.some(function (r) { return r.NUM === visit.NUM; })) throw new MockError('이미 작성한 후기입니다.');
+      var review = { NUM: visit.NUM, H_IDX: visit.H_IDX, ID: session.ID, RESERV1: visit.RESERV1, REG: dateKey(nowFn()).replace(/\//g, '-'), COMM: String(map.COMM || '').trim() };
+      for (var i = 1; i <= 4; i++) {
+        if (!/^[1-5]$/.test(String(map['RATE' + i]))) throw new MockError('네 가지 평가를 모두 선택해주세요.');
+        review['RATE' + i] = Number(map['RATE' + i]);
+      }
+      if (!review.COMM || review.COMM.length > 500) throw new MockError('후기를 1~500자로 작성해주세요.');
+      s.RATING.push(review);
+      s.RESERVATION.forEach(function (r) { if (r.NUM === visit.NUM) r.STATE = '완료'; });
+      store.save(s);
+      return review;
+    }
+    function ratingList() {
+      var s = state(); pastReserv(s, nowFn());
+      return s.RESERVATION.filter(function (r) { return r.ID === session.ID && r.DEL_CHK === 'A'; }).map(function (r) {
+        var review = s.RATING.find(function (x) { return x.NUM === r.NUM; });
+        return { NUM: r.NUM, H_IDX: r.H_IDX, ID: session.ID, HOSP: hospital(r.H_IDX).HOSP, NAME: session.NAME,
+          RESERV1: r.RESERV1, REG: review ? review.REG : '—', STATE: review ? '완료' : '미완료' };
+      });
+    }
+
     // ---------- 관심병원 (MypageController / mypage_SQL.xml) ----------
     function insertFav(map) {
       var s = state();
@@ -492,6 +535,8 @@
     // 서버가 JSP 를 그릴 때 넘기던 모델 중 브라우저 저장소에 따라 달라지는 값
     function pageModel(route) {
       switch (route) {
+        case '/hospital/main': return { reviewlist: selectReview() };
+        case '/hospital/rate/RatingList': return { list: ratingList() };
         case '/hospital/reserv/MyReserv':
           return { list: selectReservation() };
         case '/hospital/reserv/MyPastReserv':
@@ -505,6 +550,9 @@
 
     return {
       state: state,
+      insertRating: insertRating,
+      ratingList: ratingList,
+      ratingReservation: ratingReservation,
       handleAjax: handleAjax,
       pageModel: pageModel,
       selectBoardList: selectBoardList,

@@ -10,6 +10,7 @@ import hp.common.dao.AbstractDAO;
 @SuppressWarnings("unchecked")
 @Repository("MypageDAO")
 public class MypageDAO extends AbstractDAO {
+	public Map<String,Object> lockMember(Map<String,Object> map){return (Map<String,Object>)selectOne("mypage.lockMember",map);}
 	// 마이페이지 내 정보 보기
 	public Map<String, Object> selectUserInfo(Map<String, Object> map) throws Exception {
 		return (Map<String, Object>) selectOne("mypage.selectUserInfo", map);
@@ -41,8 +42,8 @@ public class MypageDAO extends AbstractDAO {
 	}
 
 	// 포인트 차감하기
-	public void updatePoint2(Map<String, Object> map) throws Exception {
-		update("mypage.updatePoint2", map);
+	public int updatePoint2(Map<String, Object> map) throws Exception {
+		return ((Number)update("mypage.updatePoint2", map)).intValue();
 	}
 
 	// 포인트 돌려주기

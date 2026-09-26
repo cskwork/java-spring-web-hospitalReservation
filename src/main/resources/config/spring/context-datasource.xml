@@ -11,9 +11,9 @@
 		destroy-method="close">
 		
 		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
-		<property name="url" value="jdbc:oracle:thin:@istudy.iptime.org:7000:ORCL" />
-		<property name="username" value="KH1608" />
-		<property name="password" value="oracle" />
+		<property name="url" value="#{systemEnvironment['DRHER_DB_URL']}" />
+		<property name="username" value="#{systemEnvironment['DRHER_DB_USER']}" />
+		<property name="password" value="#{systemEnvironment['DRHER_DB_PASSWORD']}" />
 	</bean>
 
 	<bean id="dataSource" class="net.sf.log4jdbc.Log4jdbcProxyDataSource">

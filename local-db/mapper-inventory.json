@@ -1,0 +1,135 @@
+[
+  {
+    "mapper": "src/main/resources/mapper/common/Common_SQL.xml",
+    "tables": [
+      "HOSPITAL",
+      "MEMBER",
+      "RATING",
+      "TB_FILE"
+    ],
+    "sequences": []
+  },
+  {
+    "mapper": "src/main/resources/mapper/common/catalog_SQL.xml",
+    "tables": [
+      "FAV",
+      "HOSPITAL",
+      "RESERVATION"
+    ],
+    "sequences": [
+      "HOSPITAL_SEQ"
+    ]
+  },
+  {
+    "mapper": "src/main/resources/mapper/common/secure_SQL.xml",
+    "tables": [
+      "DRHER_RESET_TOKEN",
+      "RESERVATION"
+    ],
+    "sequences": []
+  },
+  {
+    "mapper": "src/main/resources/mapper/jh/faq_SQL.xml",
+    "tables": [
+      "FAQ"
+    ],
+    "sequences": [
+      "SEQ_FAQ_IDX"
+    ]
+  },
+  {
+    "mapper": "src/main/resources/mapper/jh/file_SQL.xml",
+    "tables": [
+      "FILES"
+    ],
+    "sequences": [
+      "SEQ_FILE_IDX"
+    ]
+  },
+  {
+    "mapper": "src/main/resources/mapper/jh/notice_SQL.xml",
+    "tables": [
+      "DUAL",
+      "FILES",
+      "NOTICE"
+    ],
+    "sequences": [
+      "SEQ_NOTICE_IDX"
+    ]
+  },
+  {
+    "mapper": "src/main/resources/mapper/jh/qna_SQL.xml",
+    "tables": [
+      "QNA"
+    ],
+    "sequences": [
+      "SEQ_QNA_IDX"
+    ]
+  },
+  {
+    "mapper": "src/main/resources/mapper/jh/rating_SQL.xml",
+    "tables": [
+      "RATING"
+    ],
+    "sequences": []
+  },
+  {
+    "mapper": "src/main/resources/mapper/jw/Admin_SQL.xml",
+    "tables": [
+      "FAQ",
+      "HOSPITAL",
+      "MEMBER",
+      "NOTICE",
+      "QNA",
+      "RATING",
+      "RESERVATION"
+    ],
+    "sequences": []
+  },
+  {
+    "mapper": "src/main/resources/mapper/jw/hplist_SQL.xml",
+    "tables": [
+      "FAV",
+      "HOSPITAL",
+      "RATING"
+    ],
+    "sequences": []
+  },
+  {
+    "mapper": "src/main/resources/mapper/sk/member_SQL.xml",
+    "tables": [
+      "MEMBER"
+    ],
+    "sequences": [
+      "SEQ_MEMBER_IDX"
+    ]
+  },
+  {
+    "mapper": "src/main/resources/mapper/sy/mypage_SQL.xml",
+    "tables": [
+      "FAV",
+      "HOSPITAL",
+      "MEMBER"
+    ],
+    "sequences": []
+  },
+  {
+    "mapper": "src/main/resources/mapper/sy/rate_SQL.xml",
+    "tables": [
+      "HOSPITAL",
+      "RATING",
+      "RESERVATION"
+    ],
+    "sequences": []
+  },
+  {
+    "mapper": "src/main/resources/mapper/sy/reserv_SQL.xml",
+    "tables": [
+      "HOSPITAL",
+      "RESERVATION"
+    ],
+    "sequences": [
+      "RESERV_SEQ"
+    ]
+  }
+]

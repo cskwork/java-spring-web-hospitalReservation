@@ -15,6 +15,7 @@
 	
 			<c:otherwise>
 				<h2>지난예약내역</h2>
+<a class="care-link" href="/hospital/rate/RatingList/">지난 방문 후기 작성하기 →</a>
 			</c:otherwise>
 		</c:choose>
 	

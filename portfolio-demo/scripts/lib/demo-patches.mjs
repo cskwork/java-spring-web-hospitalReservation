@@ -54,16 +54,16 @@ export const DEMO_PATCHES = [
   {
     file: 'WEB-INF/views/header.jsp',
     id: 'header-hide-unsupported-mypage-items',
-    reason: '내 정보(건강수첩)와 후기 남기기는 데모에 포함하지 않는다.',
-    find: /\n\t*<a href="#" name="mypageList" id="(?:mypage\/OpenMypageMain|rate\/RatingList)"[^\n]*/,
-    count: 2,
+    reason: '내 정보(건강수첩)는 데모에 포함하지 않는다.',
+    find: /\n\t*<a href="#" name="mypageList" id="(?:mypage\/OpenMypageMain)"[^\n]*/,
+    count: 1,
     replace: '',
   },
   {
     file: 'WEB-INF/views/header.jsp',
     id: 'header-remove-kakao-app-key',
     reason: '카카오 SDK 앱 키를 공개 빌드에 싣지 않는다(SDK 스크립트도 제외).',
-    find: /Kakao\.init\('[0-9a-f]+'\);/,
+    find: /Kakao\.init\('UNCONFIGURED'\);/,
     replace: '// [demo] Kakao SDK 초기화(앱 키) 제거: 로그인/로그아웃은 데모에서 지원하지 않는다.',
   },
 
@@ -92,52 +92,6 @@ export const DEMO_PATCHES = [
     reason: '이동할 곳이 없는 링크(href="#")를 글자로 바꾼다.',
     find: '<p>약관 <a href="#"><span>KH정보교육원</span>자바개발자과정</a></p>',
     replace: '<p><span>KH정보교육원</span> 자바개발자과정 · Nantes / MOOZ Themes · <a href="/licenses/NOTICE.txt">출처·라이선스</a></p>',
-  },
-
-  // ---------------- main.jsp ----------------
-  {
-    file: 'WEB-INF/views/main.jsp',
-    id: 'main-slider-neutral',
-    reason: '권리 확인이 안 된 슬라이더 사진(slider-1~4.jpg)을 단색 구성으로 바꾼다.',
-    find: /<img src="\/hospital\/img\/mainImg\/slider-(\d)\.jpg"[^>]*>/,
-    count: 4,
-    replace: '<div class="demo-neutral-visual demo-neutral-visual--$1"><strong>Dr.Her</strong><span>전국 병원 검색 및 예약</span></div>',
-  },
-  {
-    file: 'WEB-INF/views/main.jsp',
-    id: 'main-slider-fixed-size',
-    reason: '고정 크기(2000px/740px)가 모바일에서 가로 넘침을 만든다.',
-    find: ' style="height:740px; width:2000px;"',
-    count: 4,
-    replace: '',
-  },
-  {
-    file: 'WEB-INF/views/main.jsp',
-    id: 'main-slider-container-size',
-    reason: '슬라이더 높이는 데모 CSS 에서 화면 너비에 맞춘다.',
-    find: '<div class="slider-container" style="width: 100%; height: 740px">',
-    replace: '<div class="slider-container demo-slider">',
-  },
-  {
-    file: 'WEB-INF/views/main.jsp',
-    id: 'main-review-neutral-figure',
-    reason: '후기 카드의 사진(portfolio-N.jpg)은 권리 확인이 안 되어 단색 카드로 바꾼다.',
-    find: '<img src="/hospital/img/mainImg/portfolio-${rl.RN}.jpg" alt="img02" class="img-responsive" />',
-    replace: '<div class="demo-neutral-figure" aria-hidden="true"><span>${rl.HOSP }</span></div>',
-  },
-  {
-    file: 'WEB-INF/views/main.jsp',
-    id: 'main-guide-screenshots',
-    reason: '가이드 캡처(partners-N.jpg)에는 실제 이름이 보여 싣지 않는다. 캡션 글은 남긴다.',
-    find: '<img src="/hospital/img/mainImg/partners-${stat.current}.jpg" alt="partners">',
-    replace: '<span class="demo-guide-mark" aria-hidden="true"><i class="fa fa-file-text-o"></i></span>',
-  },
-  {
-    file: 'WEB-INF/views/main.jsp',
-    id: 'main-disable-qna',
-    reason: '1:1 문의는 데모에서 지원하지 않는다.',
-    find: '<a href="#" id="qna" class="mz-module-button">이동하기</a>',
-    replace: '<span class="mz-module-button demo-disabled" aria-disabled="true">데모 미지원</span>',
   },
 
   // ---------------- hplist/List.jsp ----------------

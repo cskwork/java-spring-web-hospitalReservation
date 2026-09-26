@@ -15,7 +15,8 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 @Component("fileUtils")
 public class FileUtils {
-	private static final String filePath = "C:\\Java\\Spring\\hospital2\\src\\main\\webapp\\file\\";
+	private static String storage() {String configured=System.getenv("DRHER_UPLOAD_DIR");if(configured==null||configured.trim().isEmpty())throw new IllegalStateException("Upload directory not configured");return java.nio.file.Paths.get(configured).toAbsolutePath().normalize().toString()+File.separator;}
+    private static void validate(MultipartFile file){String n=file.getOriginalFilename();if(n==null||!n.matches("[\\w가-힣 .-]+\\.(txt|pdf|png|jpg|jpeg)")||file.getSize()>10000000)throw new IllegalArgumentException("Invalid attachment filename or size");}
 
 	public List<Map<String, Object>> parseInsertFileInfo(Map<String, Object> map, HttpServletRequest request)
 			throws Exception {
@@ -32,7 +33,7 @@ public class FileUtils {
 
 		String boardIdx = (String) map.get("IDX");
 
-		File file = new File(filePath);
+		File file = new File(storage());
 		if (file.exists() == false) {
 			file.mkdirs();
 		}
@@ -41,11 +42,12 @@ public class FileUtils {
 			multipartFile = multipartHttpServletRequest.getFile(iterator.next());
 
 			if (multipartFile.isEmpty() == false) {
-				originalFileName = multipartFile.getOriginalFilename();
+				validate(multipartFile);
+                originalFileName = multipartFile.getOriginalFilename();
 				originalFileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
 				storedFileName = CommonUtils.getRandomString() + originalFileExtension;
 
-				multipartFile.transferTo(new File(filePath + storedFileName));
+				multipartFile.transferTo(new File(storage(), storedFileName));
 
 				listMap = new HashMap<String, Object>();
 				listMap.put("IDX", boardIdx);
@@ -80,11 +82,12 @@ public class FileUtils {
 			multipartFile = multipartHttpServletRequest.getFile(iterator.next());
 			
 			if (multipartFile.isEmpty() == false) {
-				originalFileName = multipartFile.getOriginalFilename();
+				validate(multipartFile);
+                originalFileName = multipartFile.getOriginalFilename();
 				originalFileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
 				storedFileName = CommonUtils.getRandomString() + originalFileExtension;
 
-				multipartFile.transferTo(new File(filePath + storedFileName));
+				multipartFile.transferTo(new File(storage(), storedFileName));
 
 				listMap = new HashMap<String, Object>();
 				listMap.put("IS_NEW", "Y");
