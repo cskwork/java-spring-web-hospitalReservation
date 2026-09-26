@@ -1347,3 +1347,8 @@ deg
 	letter-spacing: -2px;
 	font-weight: bold;
 }
+/* 진료 예약(reserv.jsp) - 선택한 병원/진료과목/예약일 표시 */
+.reserv td.selected {
+	background: #ffe8cd;
+	font-weight: 600;
+}

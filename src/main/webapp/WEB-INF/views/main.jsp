@@ -307,10 +307,8 @@
 	            });
 			};
 		
-			$("a[name='HpList']").on("click", function(e) {
-				e.preventDefault();
-				moveToHpList($(this));
-			});
+			// a[name='HpList'] 클릭은 header.jsp 가 이미 연결한다(여기서 또 연결하면 두 번 이동하고,
+			// 같은 이름의 moveToHpList 가 header 의 '평가 우수병원' 처리를 덮어썼다).
 			
 			$("#fav").on("click", function(e) { //관심 병원
 				e.preventDefault();
@@ -349,32 +347,6 @@
 				autoplayHoverPause:false
 			});
 		});
-		
-		function moveToHpList(obj) {
-			var BOARD = obj.attr('id');
-			var URL = "<c:url value='/hplist/List' />";
-			var LIST = "selectHpList";
-			var QUERY = "hplist.selectAllHpList";
-			var boardTitle;
-			var REG_CHK;
-			
-			if(BOARD == 'ALL') {	
-				boardTitle = "전체 병원 검색";
-				REG_CHK = 'N';
-			} else if (BOARD == 'ALL_REG') {
-				boardTitle = "예약 가능한 병원 검색";
-				REG_CHK = 'Y';
-			}
-			
-			var comSubmit = new ComSubmit();
-			comSubmit.setUrl(URL);
-			comSubmit.addParam("boardTitle", boardTitle);
-			comSubmit.addParam("LIST", LIST);
-			comSubmit.addParam("QUERY", QUERY);
-			comSubmit.addParam("REG_CHK", REG_CHK);
-	
-			comSubmit.submit();
-		}
 		
 		function fn_favList() {
 			var comSubmit = new ComSubmit();

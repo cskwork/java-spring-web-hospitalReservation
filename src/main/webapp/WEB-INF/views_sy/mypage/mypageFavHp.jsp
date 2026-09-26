@@ -61,6 +61,15 @@
 				e.preventDefault();
 		 		fn_delFavHp();
 			});
+
+			// 병원명을 누르면 병원 상세로 이동
+			$("a[name='title']").on("click", function(e){
+				e.preventDefault();
+				var comSubmit = new ComSubmit();
+				comSubmit.setUrl("<c:url value='/hplist/HpDetail' />");
+				comSubmit.addParam("H_IDX", $(this).closest("tr").find("input[name='checkRow']").val());
+				comSubmit.submit();
+			});
 		});
 		
 		

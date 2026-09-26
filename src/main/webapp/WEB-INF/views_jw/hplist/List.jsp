@@ -96,6 +96,11 @@
 			
 			$("#SEARCH").on("click", function(e) {
 				e.preventDefault();
+				if($("#SEARCHTYPE").val() == "" && $.trim($("#SEARCHVALUE").val()) != "") {
+					Alert.render("검색 조건(병원명/위치/진료과목)을 선택해주세요.");
+					return;
+				}
+				$("#PAGE_INDEX").val(1);
 				fn_selectHpList(1);
 			});
 				
@@ -202,7 +207,7 @@
 							+ "<td id='" + num + "' align='left'>▶진료과목: " + value.MAJOR + "</td>";
 					
 					if($("#ID").val() != null && $("#ID").val() != "")	
-						str += "<td id='" + num + "' align='right' style='width: 200px; padding: 0 3px 0 0'><img name='FAVCheck' src='" + (value.FAV == null ? "/hospital/img/off.png" : "/hospital/img/on.png") + "' style='height: 24px'></img></td>";
+						str += "<td id='" + num + "' align='right' style='width: 200px; padding: 0 3px 0 0'><img name='FAVCheck' data-fav='" + (value.FAV == null ? "N" : "Y") + "' src='" + (value.FAV == null ? "/hospital/img/off.png" : "/hospital/img/on.png") + "' alt='관심병원' style='height: 24px'></img></td>";
 						
 					str += ""
 						+ "</tr>"
@@ -234,8 +239,11 @@
 					return false;
 			});
 
+			if(paramData.list.length - 1 <= 0)
+				str = "<tr><td class='Hp_list'>검색 결과가 없습니다. 다른 검색어나 검색 조건으로 다시 찾아보세요.</td></tr>";
+
 			body.append(str);
-			
+
 			map_location();
 			
 			if ($("#address").val() != "")
@@ -260,12 +268,14 @@
 			
 			$("img[name='FAVCheck']").on("click", function() {
 				var URL;
-				if($(this).prop("src") == "http://localhost:8080/hospital/img/off.png") {
+				if($(this).attr("data-fav") == "N") {
 					URL = "/hospital/mypage/InsertFav";
-					$(this).prop("src", "http://localhost:8080/hospital/img/on.png");
+					$(this).attr("data-fav", "Y");
+					$(this).attr("src", "/hospital/img/on.png");
 				} else {
-					URL = "/hospital/mypage/DelFavHp";	
-					$(this).prop("src", "http://localhost:8080/hospital/img/off.png");			
+					URL = "/hospital/mypage/DelFavHp";
+					$(this).attr("data-fav", "N");
+					$(this).attr("src", "/hospital/img/off.png");
 				}
 				
 				var comAjax = new ComAjax();
