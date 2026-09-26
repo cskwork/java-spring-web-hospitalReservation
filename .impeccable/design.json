@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-26T08:54:42.057316+00:00",
+  "title": "Design System: Dr.Her",
+  "extensions": {
+    "shadows": [],
+    "motion": [
+      {
+        "name": "state-transition",
+        "value": ".15s",
+        "purpose": "Existing button color feedback; disabled for reduced motion."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "max-760px",
+        "value": "760px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary action",
+      "kind": "button",
+      "description": "Extracted from portfolio-demo/runtime/workspace.css.",
+      "html": "<button class=\"ds-primary\" type=\"button\">저장</button>",
+      "css": ".ds-primary{font:16px/1.65 -apple-system, BlinkMacSystemFont, \"Noto Sans KR\", \"Malgun Gothic\", sans-serif;background:var(--action,#006b65);color:#fff;border:1px solid var(--action,#006b65);border-radius:6px;padding:10px 18px;min-height:44px;cursor:pointer;transition:background .15s;}.ds-primary:hover{background:#004f4b;}.ds-primary:focus-visible{outline:3px solid #188a84;outline-offset:3px;}@media(prefers-reduced-motion:reduce){.ds-primary{transition:none;}}",
+      "refersTo": "button-primary"
+    },
+    {
+      "name": "Text field",
+      "kind": "input",
+      "description": "Extracted from portfolio-demo/runtime/workspace.css.",
+      "html": "<label class=\"ds-label\">검색어<input class=\"ds-input\" type=\"text\" placeholder=\"검색어 입력\"></label>",
+      "css": ".ds-label{font:16px/1.65 -apple-system, BlinkMacSystemFont, \"Noto Sans KR\", \"Malgun Gothic\", sans-serif;display:block;font-weight:600;color:var(--ink,#142d40);}.ds-input{font:16px/1.65 -apple-system, BlinkMacSystemFont, \"Noto Sans KR\", \"Malgun Gothic\", sans-serif;display:block;margin-top:6px;background:white;color:var(--ink,#142d40);border:1px solid #8c9ea6;border-radius:6px;padding:10px 12px;min-height:44px;caret-color:var(--action,#006b65);}.ds-input:focus-visible{outline:3px solid #188a84;outline-offset:3px;}",
+      "refersTo": "input"
+    },
+    {
+      "name": "Current navigation",
+      "kind": "nav",
+      "description": "Extracted from portfolio-demo/runtime/workspace.css.",
+      "html": "<nav aria-label=\"예시 탐색\"><a class=\"ds-current\" aria-current=\"page\" href=\"#preview\">내 작업</a></nav>",
+      "css": ".ds-current{font:16px/1.65 -apple-system, BlinkMacSystemFont, \"Noto Sans KR\", \"Malgun Gothic\", sans-serif;padding:8px 0;text-decoration:none;color:var(--action,#006b65);font-weight:750;border-bottom:2px solid var(--action,#006b65);}.ds-current:focus-visible{outline:3px solid #188a84;outline-offset:3px;}"
+    },
+    {
+      "name": "Supporting container",
+      "kind": "card",
+      "description": "Extracted from portfolio-demo/runtime/workspace.css.",
+      "html": "<section class=\"ds-support\"><p>작업 정보</p></section>",
+      "css": ".ds-support{font:16px/1.65 -apple-system, BlinkMacSystemFont, \"Noto Sans KR\", \"Malgun Gothic\", sans-serif;color:var(--ink,#142d40);padding:24px;background:var(--surface,#f3f6f7);border-radius:10px;}"
+    },
+    {
+      "name": "Empty state",
+      "kind": "custom",
+      "description": "Extracted from portfolio-demo/runtime/workspace.css.",
+      "html": "<p class=\"ds-empty\">아직 표시할 기록이 없습니다.</p>",
+      "css": ".ds-empty{font:16px/1.65 -apple-system, BlinkMacSystemFont, \"Noto Sans KR\", \"Malgun Gothic\", sans-serif;padding:28px;background:var(--surface,#f3f6f7);border-radius:10px;color:var(--muted,#4c626c);}"
+    },
+    {
+      "name": "Record row",
+      "kind": "custom",
+      "description": "Extracted from portfolio-demo/runtime/workspace.css.",
+      "html": "<article class=\"ds-row\"><strong>기록 제목</strong><p>상태와 다음 작업을 확인하세요.</p></article>",
+      "css": ".ds-row{font:16px/1.65 -apple-system, BlinkMacSystemFont, \"Noto Sans KR\", \"Malgun Gothic\", sans-serif;padding:24px 0;border-bottom:1px solid var(--line,#d4dfe3);color:var(--ink,#142d40);}.ds-row p{color:var(--muted,#4c626c);}"
+    }
+  ],
+  "narrative": {
+    "northStar": "의료 예약 서비스",
+    "overview": "White content, navy text and teal actions organize hospital search, reservation, personal records and administration. Neutral summary areas separate supporting information from the next task. The source JSP presentation and synthetic compatibility workspace use the same color roles but retain their own layout selectors.",
+    "keyCharacteristics": [
+      "Task-first hierarchy",
+      "Explicit environment and state",
+      "Source-based components"
+    ],
+    "rules": [],
+    "dos": [
+      "Preserve route and field contracts.",
+      "Keep focus visible."
+    ],
+    "donts": [
+      "Do not imply production success from synthetic state.",
+      "Do not claim visual verification without rendering."
+    ]
+  }
+}
