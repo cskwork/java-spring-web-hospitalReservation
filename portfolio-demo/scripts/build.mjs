@@ -286,8 +286,8 @@ const redirect = (to) =>
   `<!DOCTYPE html>\n<html lang="ko"><head><meta charset="utf-8"><meta http-equiv="refresh" content="0; url=${to}">` +
   `<title>Dr.Her 병원 예약 · 원본 기반 데모</title></head>` +
   `<body><p>${DEMO_NOTICE}</p><p><a href="${to}">메인 화면으로 이동</a></p></body></html>\n`;
-write('index.html', redirect('/hospital/main/'));
-write('hospital/index.html', redirect('/hospital/main/'));
+write('index.html', redirect('/hospital/workspace/'));
+write('hospital/index.html', redirect('/hospital/workspace/'));
 
 // Newly authored compatibility surfaces retain the original module routes; tracked separately from recovered JSP pages.
 const compatibility = require('../runtime/modules.js').routes;
