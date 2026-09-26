@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="mypage">
+<mapper namespace="mypage"><select id="lockMember" parameterType="hashmap" resultType="hashmap">SELECT * FROM MEMBER WHERE ID=#{ID} AND DEL_CHK='0' FOR UPDATE</select>
 	<!-- 내 정보 보기 -->
 	<select id="selectUserInfo" parameterType="hashmap"
 		resultType="hashmap">
@@ -44,7 +44,7 @@
 	    
 		<![CDATA[	
 			WHERE
-				IDX=#{IDX}
+				IDX=#{IDX} AND ID=#{ID}
 		]]>
 
 	</update>
@@ -105,7 +105,7 @@
 			SET
 				POINT = POINT - 100
 			WHERE 
-				ID = #{ID}
+				ID = #{ID} AND POINT >= 100
 		]]>
 	</update>
 

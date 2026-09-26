@@ -1,0 +1,1 @@
+package hp.common.service;import java.util.Map;public interface PasswordResetService {Map<String,Object> request(String id)throws Exception;Map<String,Object> confirm(String token,String password)throws Exception;}

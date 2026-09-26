@@ -38,92 +38,33 @@ public class ReservServiceImpl implements ReservService {
 	// 병원별 예약가능시간
 	@Override
 	public List<String> selectDate(Map<String, Object> map) throws Exception {
-		// 날짜 포맷형식
-		SimpleDateFormat date = new SimpleDateFormat("yyyy/MM/dd");
-		String today = date.format(new Date());
-
-		map.put("DATE", today);
-
-		Map<String, Object> HpMap = reservDAO.selectDate(map);
-		List<Map<String, Object>> reservMap = reservDAO.selectReservation(map);
-		// 임의 리스트 객체 생성
-		List<String> resultList = new ArrayList<String>();
-
-		// 시간 앞 두자리 뒷 두자리 나눔
-		String onhour1 = ((String) HpMap.get("ONHOUR")).substring(0, 2);
-		int on1 = Integer.parseInt(onhour1);
-
-		String onhour2 = ((String) HpMap.get("ONHOUR")).substring(2, 4);
-		int on2 = Integer.parseInt(onhour2);
-
-		String offhour1 = ((String) HpMap.get("OFFHOUR")).substring(0, 2);
-		int off1 = Integer.parseInt(offhour1);
-
-		String offhour2 = ((String) HpMap.get("OFFHOUR")).substring(2, 4);
-		int off2 = Integer.parseInt(offhour2);
-
-		String intervall = (String) HpMap.get("INTERVALL");
-		int inter = Integer.parseInt(intervall);
-
-		String meal = ((String) HpMap.get("MEAL_TIME")).substring(0, 2);
-		int m = Integer.parseInt(meal);
-
-		for (int num = 0; (on1 <= off1 || on2 < off2); on2 += inter) {
-			if (on2 >= 60) {
-				on1 += 1;
-				on2 %= 60;
-			}
-			String tmpStr = String.format("%02d:%02d", on1, on2);
-			if (num < reservMap.size() && ((String) reservMap.get(num).get("RESERV2")).equals(tmpStr)) {
-				num++;
-				continue;
-			}
-
-			if (on1 >= m && on1 < m + 1) {
-				on1 += 1;
-				on2 = -inter;
-				continue;
-			}
-			tmpStr = String.format("%02d:%02d", on1, on2);
-			resultList.add(tmpStr);
-		}
-		return resultList;
+        Map<String,Object> h=reservDAO.selectDate(map);
+        List<String> result=new ArrayList<String>(); if(h==null)return result;
+        String requested=map.get("RESERV1")==null?String.format("%s/%02d/%02d",map.get("year"),Integer.parseInt(String.valueOf(map.get("month"))),Integer.parseInt(String.valueOf(map.get("day")))):String.valueOf(map.get("RESERV1"));
+        java.time.LocalDate date=java.time.LocalDate.parse(requested,java.time.format.DateTimeFormatter.ofPattern("uuuu/MM/dd").withResolverStyle(java.time.format.ResolverStyle.STRICT));
+        if(date.isBefore(java.time.LocalDate.now())||date.isAfter(java.time.LocalDate.now().plusDays(7)))return result;
+        map.put("RESERV1",requested);
+        java.util.Set<String> taken=new java.util.HashSet<String>();for(Map<String,Object> r:reservDAO.takenSlots(map))taken.add(String.valueOf(r.get("RESERV2")));
+        String on=String.valueOf(h.get("ONHOUR")),off=String.valueOf(h.get("OFFHOUR"));int from=Integer.parseInt(on.substring(0,2))*60+Integer.parseInt(on.substring(2)),to=Integer.parseInt(off.substring(0,2))*60+Integer.parseInt(off.substring(2)),step=Integer.parseInt(String.valueOf(h.get("INTERVALL"))),meal=Integer.parseInt(String.valueOf(h.get("MEAL_TIME")).substring(0,2));
+        if(step<=0||step>240)throw new IllegalArgumentException("Invalid interval");
+        for(int m=from;m<to;m+=step){if(m/60==meal)continue;String time=String.format("%02d:%02d",m/60,m%60);if(!taken.contains(time)&&date.atTime(m/60,m%60).isAfter(java.time.LocalDateTime.now().plusMinutes(30)))result.add(time);}return result;
 	}
 
 	// 예약하기
 	@Override
+	@org.springframework.transaction.annotation.Transactional(rollbackFor=Exception.class)
 	public int insertReserv(Map<String, Object> map, Model model, HttpSession session) throws Exception {
-		SimpleDateFormat date = new SimpleDateFormat("yyyy/MM/dd");
-		String today = date.format(new Date());
-
-		map.put("ID", session.getAttribute("ID"));
-		map.put("DATE", today);
-
-		Map<String, Object> UserInfo = mypageDAO.selectUserInfo(map);
-		int point = ((BigDecimal) UserInfo.get("POINT")).intValue();
-		model.addAttribute("POINT", point);
-		
-		if (point < 100) {
-			return 1;
-		} else {
-			// 중복확인
-			List<Map<String, Object>> templist = reservDAO.selectReservation(map);
-			
-			for (Map<String, Object> tmp : templist) {
-				String tmpH_IDX= ((BigDecimal) tmp.get("H_IDX")).toString();
-				String tmpReserv1 = tmp.get("RESERV1").toString();
-	
-				// 중복 예약 불가
-				if (tmpH_IDX.equals(map.get("H_IDX")) && tmpReserv1.equals(map.get("RESERV1"))) {
-					return 2;
-				}
-			}
-
-			mypageDAO.updatePoint2(map);
-			reservDAO.insertReserv(map);
-
-			return 0;
-		}
+        hp.common.security.SessionIdentity.bind(map,session);
+        Map<String,Object> h=reservDAO.lockHospital(map); if(h==null||!"Y".equals(h.get("REG_CHK")))throw new IllegalArgumentException("Hospital is unavailable");
+        Map<String,Object> member=mypageDAO.lockMember(map);if(member==null)throw new SecurityException("Member missing");
+        int point=((Number)member.get("POINT")).intValue();model.addAttribute("POINT",point);
+        for(Map<String,Object> r:reservDAO.selectReservation(map))if(String.valueOf(r.get("H_IDX")).equals(String.valueOf(map.get("H_IDX")))){
+            if(String.valueOf(r.get("RESERV1")).equals(String.valueOf(map.get("RESERV1")))&&String.valueOf(r.get("RESERV2")).equals(String.valueOf(map.get("RESERV2"))))return 0;
+            return 2;
+        }
+        if(!String.valueOf(h.get("MAJOR")).equals(String.valueOf(map.get("CURED")))||!selectDate(map).contains(String.valueOf(map.get("RESERV2"))))throw new IllegalArgumentException("Invalid appointment selection");
+        if(point<100)return 1;
+        if(mypageDAO.updatePoint2(map)!=1)throw new IllegalStateException("Point debit failed");reservDAO.insertReserv(map);model.addAttribute("POINT",point-100);return 0;
 	}
 
 	// 예약 내역
@@ -169,16 +110,11 @@ public class ReservServiceImpl implements ReservService {
 
 	// 예약 취소
 	@Override
+	@org.springframework.transaction.annotation.Transactional(rollbackFor=Exception.class)
 	public void cancelReserv(Map<String, Object> map, HttpSession session) throws Exception {
-		String[] temp = ((String) map.get("H_IDX")).split(",");
-		map.put("ID", session.getAttribute("ID"));
-		for (int i = 0; i < temp.length; i++) {
-			map.remove("H_IDX");
-			map.put("H_IDX", temp[i]);
-
-			reservDAO.cancelReserv(map);
-			mypageDAO.returnPoint(map);
-		}
+        hp.common.security.SessionIdentity.bind(map,session);
+        String[] ids=String.valueOf(map.get("H_IDX")).split(",");java.util.Arrays.sort(ids);
+        for(String id:ids){map.put("H_IDX",id);reservDAO.lockHospital(map);mypageDAO.lockMember(map);int changed=reservDAO.cancelReserv(map);for(int i=0;i<changed;i++)mypageDAO.returnPoint(map);}
 	}
 
 	@Override

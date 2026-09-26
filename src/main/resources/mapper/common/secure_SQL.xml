@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"><mapper namespace="secure">
+<insert id="insertReset" parameterType="hashmap">INSERT INTO DRHER_RESET_TOKEN(TOKEN_HASH,ID,EXPIRES_AT,USED) VALUES(#{TOKEN_HASH},#{ID},SYSDATE+15/1440,0)</insert>
+<select id="lockReset" parameterType="hashmap" resultType="hashmap">SELECT ID FROM DRHER_RESET_TOKEN WHERE TOKEN_HASH=#{TOKEN_HASH} AND USED=0 AND EXPIRES_AT>SYSDATE FOR UPDATE</select>
+<update id="consumeReset" parameterType="hashmap">UPDATE DRHER_RESET_TOKEN SET USED=1 WHERE TOKEN_HASH=#{TOKEN_HASH} AND USED=0</update>
+<select id="lockReservation" parameterType="hashmap" resultType="hashmap">SELECT * FROM RESERVATION WHERE NUM=#{NUM} FOR UPDATE</select>
+<update id="transitionReservation" parameterType="hashmap">UPDATE RESERVATION SET DEL_CHK=#{DEL_CHK} WHERE NUM=#{NUM} AND DEL_CHK='B'</update></mapper>

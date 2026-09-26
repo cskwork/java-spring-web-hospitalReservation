@@ -51,7 +51,7 @@
 		
 		<if test='SEARCH_CHK == "Y"'>
 			<![CDATA[
-				AND #{SEARCHTYPE} LIKE '%'||#{SEARCHVALUE}||'%'
+				AND ((#{SEARCHTYPE}='HOSP' AND HOSP LIKE '%'||#{SEARCHVALUE}||'%') OR (#{SEARCHTYPE}='ADDR' AND ADDR LIKE '%'||#{SEARCHVALUE}||'%') OR (#{SEARCHTYPE}='MAJOR' AND MAJOR LIKE '%'||#{SEARCHVALUE}||'%'))
 			]]>
 		</if>
 		<include refid="common.pagingPost"/>
@@ -117,7 +117,7 @@
 		
 		<if test='SEARCH_CHK == "Y"'>
 			<![CDATA[
-				AND #{SEARCHTYPE} LIKE '%'||#{SEARCHVALUE}||'%'
+				AND ((#{SEARCHTYPE}='HOSP' AND HOSP LIKE '%'||#{SEARCHVALUE}||'%') OR (#{SEARCHTYPE}='ADDR' AND ADDR LIKE '%'||#{SEARCHVALUE}||'%') OR (#{SEARCHTYPE}='MAJOR' AND MAJOR LIKE '%'||#{SEARCHVALUE}||'%'))
 			]]>
 		</if>
 		<include refid="common.pagingPost"/>

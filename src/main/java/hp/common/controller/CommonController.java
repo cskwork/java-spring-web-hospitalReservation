@@ -25,11 +25,15 @@ public class CommonController {
 	@RequestMapping(value = "/common/downloadFile")
 	public void downloadFile(CommandMap commandMap, HttpServletResponse response) throws Exception {
 		Map<String, Object> map = commonService.selectFileInfo(commandMap.getMap());
+		if(map==null)throw new IllegalArgumentException("Attachment not found");
 		String storedFileName = (String) map.get("SAVE_FILE");
 		String originalFileName = (String) map.get("ORG_FILE");
 
 		// first.common.util.FileUtils가 아니라 org.apache.commons.io.FileUtils이다.
-		byte fileByte[] = FileUtils.readFileToByteArray(new File("C:\\Java\\Spring\\hospital2\\src\\main\\webapp\\file\\" + storedFileName));
+        String configured=System.getenv("DRHER_UPLOAD_DIR");if(configured==null)throw new IllegalStateException("Upload directory not configured");
+        java.nio.file.Path base=java.nio.file.Paths.get(configured).toAbsolutePath().normalize();java.nio.file.Path file=base.resolve(storedFileName).normalize();
+        if(!file.startsWith(base)||!java.nio.file.Files.isRegularFile(file)||java.nio.file.Files.isSymbolicLink(file)||java.nio.file.Files.size(file)>10000000)throw new SecurityException("Invalid attachment");
+        byte fileByte[]=java.nio.file.Files.readAllBytes(file);
 
 		response.setContentType("application/octet-stream");
 		

@@ -15,6 +15,7 @@
 	
 			<c:otherwise>
 				<h2>지난예약내역</h2>
+<a class="care-link" href="/hospital/rate/RatingList/">지난 방문 후기 작성하기 →</a>
 			</c:otherwise>
 		</c:choose>
 	
@@ -90,8 +91,6 @@
 	</div>
 	
 	<%@ include file="/WEB-INF/include/include-body.jspf" %>
-	
-	<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- jQuery CDN --->
 	
 	<script type="text/javascript">
 		$(document).ready(function(){

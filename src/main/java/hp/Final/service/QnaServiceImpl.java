@@ -16,6 +16,9 @@ public class QnaServiceImpl implements QnaService {
 
 	@Resource(name = "QnaDAO")
 	private QnaDAO qnaDAO;
+    private void owned(Map<String,Object> map)throws Exception {Map<String,Object> q=qnaDAO.selectQDetail(map);if(q==null||map.get("ID")==null||!String.valueOf(q.get("ID")).equals(String.valueOf(map.get("ID"))))throw new SecurityException("Owned inquiry required");}
+    private void validate(Map<String,Object> map){for(String k:new String[]{"TITLE","CONTENT"}){String v=String.valueOf(map.get(k));if(v.trim().length()<1||v.length()>4000||"null".equals(v))throw new IllegalArgumentException("Invalid inquiry content");}map.put("CHK",0);}
+
 
 	@Override
 	public List<Map<String, Object>> selectQnaList(Map<String, Object> map) throws Exception {// ����Ʈ ��ȸ
@@ -24,25 +27,26 @@ public class QnaServiceImpl implements QnaService {
 
 	@Override
 	public void insertQna(Map<String, Object> map) throws Exception { // �Խñ� �ۼ�
-		qnaDAO.insertQna(map);
+		validate(map);qnaDAO.insertQna(map);
 	}
 
 	@Override
 	public Map<String, Object> selectQDetail(Map<String, Object> map) throws Exception { // ���� �󼼺���
-		return qnaDAO.selectQDetail(map);
+		owned(map);return qnaDAO.selectQDetail(map);
 	}
 
 	@Override
 	public Map<String, Object> selectADetail(Map<String, Object> map) throws Exception { // �亯 �󼼺���
-		return qnaDAO.selectADetail(map);
+		owned(map);return qnaDAO.selectADetail(map);
 	}
 
 	@Override
 	public void updateQna(Map<String, Object> map) throws Exception { // �Խñ� ����
-		qnaDAO.updateQna(map);
+		owned(map);validate(map);qnaDAO.updateQna(map);
 	}
 
 	@Override
+	@org.springframework.transaction.annotation.Transactional(rollbackFor=Exception.class)
 	public void deleteQna(Map<String, Object> map) throws Exception { // �Խñ� ����
 		String[] temp = ((String) map.get("IDX")).split(",");
 
@@ -50,7 +54,7 @@ public class QnaServiceImpl implements QnaService {
 			map.remove("IDX");
 			map.put("IDX", s);
 
-			qnaDAO.deleteQna(map);
+			owned(map);qnaDAO.deleteQna(map);
 		}
 	}
 }

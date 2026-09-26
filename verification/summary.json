@@ -1,0 +1,22 @@
+{
+  "synthetic": {
+    "passed": 48,
+    "failed": 0,
+    "skipped": 0,
+    "existingTestsPreserved": 38
+  },
+  "native": {
+    "freshSourceFiles": 67,
+    "freshTestFiles": 5,
+    "passed": 14,
+    "failed": 0,
+    "skipped": 0,
+    "warPackaged": true,
+    "database": "isolated H2 Oracle compatibility mode; not production Oracle",
+    "configuredContextStartup": true,
+    "loopbackTomcatJspAndKoreanPost": true
+  },
+  "designDetector": [],
+  "browserUsed": false,
+  "deployed": false
+}

@@ -10,6 +10,7 @@ import hp.common.dao.AbstractDAO;
 @SuppressWarnings("unchecked")
 @Repository("RateDAO")
 public class RateDAO extends AbstractDAO {
+	public Map<String,Object> lockVisit(Map<String,Object> map) { return (Map<String,Object>) selectOne("rate.lockVisit",map); }
 	// 만족도조사가능한 목록
 	public List<Map<String, Object>> reservList(Map<String, Object> map) throws Exception {
 		return (List<Map<String, Object>>) selectList("rate.reservList", map);

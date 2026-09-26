@@ -1,0 +1,1 @@
+package hp.common.service;import java.util.*;import javax.servlet.http.HttpSession;public interface HospitalCatalogService {List<Map<String,Object>> list(HttpSession session);String save(Map<String,Object> p,HttpSession session);String remove(Map<String,Object> p,HttpSession session);}

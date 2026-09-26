@@ -182,7 +182,7 @@
 			});
 
 			// 서브 메뉴 마우스 오버 이벤트
-			$("a[name='showMenu'").mouseenter(function() {
+			$("a[name='showMenu']").mouseenter(function() {
 				$(".subMenu").css('display', 'block');
 				$(".subMenu").find(".left").css('margin-left', $(this).offset().left + "px");
 				
@@ -243,11 +243,13 @@
 			comSubmit.setUrl("<c:url value='/" + URL + "'/>");
 			if (URL == "reserv/MyReserv")
 				comSubmit.addParam("STEP", "reserv");
+			else if (URL == "reserv/MyPastReserv")
+				comSubmit.addParam("STEP", "pastreserv");
 
 			comSubmit.submit();
 		}
 
-		Kakao.init('a2a026028f5ff6b1e76fd91816f13681');
+		Kakao.init('UNCONFIGURED');
 		function LogOut() {
 			Kakao.Auth.logout(function() {
 				console.log("logged out.");

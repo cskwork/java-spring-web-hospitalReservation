@@ -906,7 +906,7 @@
 		/* 카카오 로그인 */
 		//<![CDATA[
 		// 사용할 앱의 JavaScript 키를 설정해 주세요.
-		Kakao.init('a2a026028f5ff6b1e76fd91816f13681');
+		Kakao.init('UNCONFIGURED');
 		function loginWithKakao() {
 			// 로그인 창을 띄웁니다.
 			Kakao.Auth.login({

@@ -1,0 +1,8 @@
+Third-party notices
+
+Nantes template: MOOZ Themes, GPL-3.0.
+Upstream: https://github.com/moozthemes/nantes/
+License: NANTES-GPL-3.0.txt
+Modified for the Dr.Her source-derived demo, 2026-09-26: external fonts and photos omitted; original templates combined with synthetic data; mobile CSS corrections added. The distributed HTML/CSS/JavaScript remains readable source. Original and build sources: https://github.com/cskwork/java-spring-web-hospitalReservation/tree/codex/vercel-mock-demo-20260926
+
+Other libraries retain their own licenses: jQuery and Bootstrap (MIT), Font Awesome code (MIT) and fonts (OFL-1.1), Owl Carousel (MIT), Codrops header (MIT). Existing author headers and bundled license text are retained.

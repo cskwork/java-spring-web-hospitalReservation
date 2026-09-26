@@ -28,6 +28,9 @@ public class MemberServiceImpl implements MemberService {
 	@Resource(name = "fileUtils")
 	private FileUtils fileUtils;
 
+	@Resource(name = "ReservDAO")
+ private hp.Final.dao.ReservDAO reservDAO;
+ @Resource(name="MypageDAO") private hp.Final.dao.MypageDAO mypageDAO;
 	@Resource(name = "memberDAO")
 	private MemberDAO memberDAO;
 
@@ -36,13 +39,13 @@ public class MemberServiceImpl implements MemberService {
 	public String login(Map<String, Object> map, HttpSession session, Model model, HttpServletResponse response,
 			RedirectAttributes rttr) throws Exception {
 		// 암호 암호화
-		map.put("PWD", MD5Hash.getEncMD5((String) map.get("PWD")));
-
+		String supplied = (String)map.remove("PWD");
 		Map<String, Object> login = memberDAO.login(map);
+		if(login!=null&&!hp.common.security.PasswordHash.verify(supplied,String.valueOf(login.get("PWD"))))login=null;
 
 		// 로그인 세션 생성
 		if (login != null) {
-			model.addAttribute("user", login);
+			login.remove("PWD");login.remove("ID_SESSIONK");model.addAttribute("user", login);
 			session.setAttribute("IDX", login.get("IDX"));
 			session.setAttribute("ID", login.get("ID"));
 			session.setAttribute("NAME", login.get("NAME"));
@@ -54,7 +57,7 @@ public class MemberServiceImpl implements MemberService {
 			}
 
 			// 자동 로그인 체크되어 있으면
-			if (map.get("autoLogin") != null) {
+			if (false) {
 				Cookie autoLogin = new Cookie("autoLogin", session.getId());
 
 				autoLogin.setPath("/");
@@ -87,34 +90,7 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public String kakaoLogin(Map<String, Object> map, HttpSession session, Model model, HttpServletResponse response,
 			RedirectAttributes rttr) throws Exception {
-		String ID = "";
-		int check;
-
-		// 암호 자체 생성
-		map.put("PWD", MD5Hash.getEncMD5((String) map.get("ID")));
-
-		if (map.get("ID") != null)
-			ID = (String) map.get("ID");
-
-		check = memberDAO.checkId(ID); // 카카오 회원인지 확인
-
-		if (check != 1)
-			memberDAO.insertMember(map); // 카카오 회원가입
-
-		Map<String, Object> login = memberDAO.login(map); // 카카오 로그인
-
-		// 로그인 세션 생성
-		if (login != null) {
-			model.addAttribute("user", login);
-			session.setAttribute("IDX", login.get("IDX"));
-			session.setAttribute("ID", login.get("ID"));
-			session.setAttribute("NAME", login.get("NAME"));
-			session.setAttribute("ADDR", login.get("ADDR"));
-			session.setAttribute("ID_IMG", login.get("ID_IMG"));
-		}
-		model.addAttribute("body", "body");
-
-		return "mainForm";
+		throw new SecurityException("Verified Kakao provider adapter is not configured");
 	}
 
 	// 자동로그인
@@ -127,7 +103,7 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public Map<String, Object> checkUserWithSessionKey(String SESSIONKEY) throws Exception {
 
-		return memberDAO.checkUserWithSessionKey(SESSIONKEY);
+		return null; // legacy session-ID cookies are not authentication tokens
 	}
 
 	// 회원목록
@@ -152,8 +128,11 @@ public class MemberServiceImpl implements MemberService {
 	@Transactional
 	@Override
 	public void insertMember(Map<String, Object> map, RedirectAttributes rttr) throws Exception {
-		// 유저 암호 암호화 처리
-		map.put("PWD", MD5Hash.getEncMD5((String) map.get("PWD")));
+		if("admin".equalsIgnoreCase(String.valueOf(map.get("ID"))))throw new SecurityException("Reserved account");
+        if(!String.valueOf(map.get("ID")).matches("[A-Za-z0-9_.@-]{3,100}"))throw new IllegalArgumentException("Invalid account identifier");
+        if(memberDAO.checkId(String.valueOf(map.get("ID")))!=0)throw new IllegalArgumentException("Account already exists");
+        // 유저 암호 암호화 처리
+		map.put("PWD", hp.common.security.PasswordHash.hash((String) map.get("PWD")));
 	
 		rttr.addFlashAttribute("authmsg", "가입시 사용할 이메일로 인증해주세요");
 		rttr.addFlashAttribute("msg", "회원등록이 되었습니다. 로그인해주세요");
@@ -181,21 +160,24 @@ public class MemberServiceImpl implements MemberService {
 	// 비밀번호 변경
 	@Override
 	public void newPWD(Map<String, Object> map, RedirectAttributes rttr) throws Exception {
-		map.put("PWD", MD5Hash.getEncMD5((String) map.get("PWD")));
-		
+		if (!Boolean.TRUE.equals(map.remove("RESET_VERIFIED"))) throw new SecurityException("One-time reset token required");
+		map.put("PWD", hp.common.security.PasswordHash.hash((String) map.get("PWD")));
 		memberDAO.newPWD(map);
 		
 		rttr.addFlashAttribute("msg2", "비밀번호를 변경하였습니다. 다시 로그인해주세요.");
 	}
 
 	// 회원삭제
+	@Transactional(rollbackFor=Exception.class)
 	public boolean deleteMember(Map<String, Object> map, HttpSession session) throws Exception {
-		Map<String, Object> selectMember = memberDAO.viewMember(map);
+		hp.common.security.SessionIdentity.bind(map,session);
+		Map<String,Object> selectMember=mypageDAO.lockMember(map);
+ if(selectMember==null)throw new SecurityException("Member not found");
+ if(!reservDAO.selectReservation(map).isEmpty())throw new IllegalStateException("Cancel upcoming appointments before withdrawal");
 
-		if (selectMember.get("PWD").equals(map.get("PWD"))) {
-			session.invalidate();
-
+		if (hp.common.security.PasswordHash.verify((String)map.get("PWD"),String.valueOf(selectMember.get("PWD")))) {
 			memberDAO.deleteMember(map);
+			session.invalidate();
 
 			return true;
 		}

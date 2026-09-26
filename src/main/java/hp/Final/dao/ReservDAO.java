@@ -10,6 +10,8 @@ import hp.common.dao.AbstractDAO;
 @SuppressWarnings("unchecked")
 @Repository("ReservDAO")
 public class ReservDAO extends AbstractDAO {
+	public Map<String,Object> lockHospital(Map<String,Object> map){return (Map<String,Object>)selectOne("reserv.lockHospital",map);}
+ public List<Map<String,Object>> takenSlots(Map<String,Object> map){return (List<Map<String,Object>>)selectList("reserv.takenSlots",map);}
 	// 예약 가능한 병원 리스트
 	public List<Map<String, Object>> selectHpList(Map<String, Object> map) throws Exception {
 		return (List<Map<String, Object>>) selectList("reserv.selectHpList", map);
@@ -36,8 +38,8 @@ public class ReservDAO extends AbstractDAO {
 	}
 
 	// 예약취소하기
-	public void cancelReserv(Map<String, Object> map) throws Exception {
-		update("reserv.cancelReserv", map);
+	public int cancelReserv(Map<String, Object> map) throws Exception {
+		return ((Number)update("reserv.cancelReserv", map)).intValue();
 	}
 
 	// 지난예약으로 변경하기

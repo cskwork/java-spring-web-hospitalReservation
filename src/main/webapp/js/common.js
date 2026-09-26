@@ -42,7 +42,9 @@ function ComSubmit(opt_formId) {
 	this.submit = function submit() {
 		var frm = $("#" + this.formId)[0];
 
-		frm.action = this.url;
+		var tokenMatch=document.cookie.match(/(?:^|; )DRHER_CSRF=([^;]+)/);
+        if(tokenMatch){var csrf=document.createElement('input');csrf.type='hidden';csrf.name='_csrf';csrf.value=decodeURIComponent(tokenMatch[1]);frm.appendChild(csrf);}
+        frm.action = this.url;
 		frm.method = "post";
 		frm.submit();
 		$("#"+this.formId).empty();
@@ -183,3 +185,5 @@ $(".gnb>li").on("click", function(){
 		$(this).addClass("on");
 	}
 });
+// Native MVC CSRF contract; static mock adapter replaces transport in demo mode.
+(function(){function token(){var m=document.cookie.match(/(?:^|; )DRHER_CSRF=([^;]+)/);return m?decodeURIComponent(m[1]):'';} if(window.jQuery){jQuery.ajaxSetup({beforeSend:function(xhr){xhr.setRequestHeader('X-CSRF-Token',token());}});} document.addEventListener('submit',function(e){var f=e.target;if(f.tagName==='FORM'&&!f.querySelector('[name="_csrf"]')){var i=document.createElement('input');i.type='hidden';i.name='_csrf';i.value=token();f.appendChild(i);}},true);})();

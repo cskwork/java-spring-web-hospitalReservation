@@ -1,0 +1,306 @@
+@charset "UTF-8";
+/*
+ * Dr.Her 데모 전용 스타일. 원본 CSS(ui.css, style.css, bootstrap 3.3.5) 뒤에 읽힌다.
+ * 1) 고정 안내문  2) 권리 확인이 안 된 사진 자리를 채우는 단색 구성  3) 모바일 가로 넘침을 막는 반응형 보정
+ * 원본 색(#01395c, #ffe8cd, #1AAB8A)을 그대로 쓴다.
+ */
+
+/* 1. 고정 안내문 */
+.demo-notice {
+	position: sticky;
+	top: 0;
+	z-index: 1000;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px 12px;
+	align-items: center;
+	justify-content: center;
+	padding: 8px 12px;
+	background: #01395c;
+	color: #fff;
+	font-size: 14px;
+	line-height: 1.4;
+	text-align: center;
+}
+.demo-notice__reset {
+	border: 1px solid #fff;
+	background: transparent;
+	color: #fff;
+	padding: 2px 10px;
+	font-size: 13px;
+	cursor: pointer;
+}
+.demo-notice__reset:hover,
+.demo-notice__reset:focus-visible {
+	background: #fff;
+	color: #01395c;
+}
+
+.demo-note,
+.demo-map-note {
+	margin: 10px 0 0;
+	font-size: 13px;
+	color: #6b6b6b;
+}
+.demo-disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+/* 2. 단색 구성 (사진 대체) */
+.demo-slider,
+.demo-slider .owl-slider-item {
+	height: clamp(220px, 40vw, 460px);
+}
+.demo-neutral-visual {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	height: 100%;
+	color: #01395c;
+	background: #e7f1f7;
+}
+.demo-neutral-visual--2 { background: #ffe8cd; }
+.demo-neutral-visual--3 { background: #e3f4ef; }
+.demo-neutral-visual--4 { background: #eef0f6; }
+.demo-neutral-visual strong {
+	font-size: clamp(32px, 6vw, 64px);
+	font-weight: 700;
+	letter-spacing: 0.02em;
+}
+.demo-neutral-visual span {
+	font-size: clamp(16px, 2.4vw, 24px);
+}
+.demo-neutral-figure {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	aspect-ratio: 3 / 2;
+	background: #e7f1f7;
+	color: #01395c;
+	font-size: 22px;
+	font-weight: 600;
+}
+.ot-portfolio-item:nth-child(even) .demo-neutral-figure { background: #ffe8cd; }
+.demo-guide-mark {
+	display: block;
+	margin-top: 10px;
+	font-size: 40px;
+	color: #a9a9a9;
+}
+.partner-logo {
+	padding: 24px 8px;
+	border: 1px solid #e3e3e3;
+	min-height: 120px;
+}
+
+/* 관심병원 별 아이콘(자체 SVG) */
+img[name='FAVCheck'] {
+	cursor: pointer;
+}
+
+/* 지도 SDK 를 쓰지 않으므로 떠다니는 지도 상자를 일반 블록으로 둔다 */
+.gridForm > div > .floatMenu {
+	position: static;
+	width: auto;
+	height: auto;
+}
+.gridForm > div > .floatMenu > #daumMap {
+	display: none;
+}
+
+/* 3. 반응형 보정 — 원본은 1200px 고정 폭 기준이었다 */
+.Tiles_wrap,
+.header > div:not(.subMenu) {
+	width: auto;
+	max-width: 1200px;
+	box-sizing: border-box;
+}
+.Tiles_wrap {
+	padding: 0 16px;
+}
+.reserv,
+.myReservList,
+.FavList {
+	max-width: 100%;
+	box-sizing: border-box;
+}
+.myReservList,
+.FavList {
+	overflow-x: auto;
+}
+.reserv {
+	height: auto;
+	padding-bottom: 40px;
+}
+.reserv::after {
+	content: "";
+	display: block;
+	clear: both;
+}
+#dialogbox {
+	width: min(550px, calc(100vw - 24px)) !important;
+	left: 50% !important;
+	transform: translateX(-50%);
+}
+.Hp_list table {
+	table-layout: fixed;
+}
+.Hp_list td {
+	overflow-wrap: anywhere;
+}
+
+@media (max-width: 991px) {
+	.gridForm {
+		display: block;
+	}
+	.gridForm > #listForm {
+		width: 100%;
+		margin: 0;
+	}
+	.board_view {
+		width: 100%;
+	}
+}
+
+@media (max-width: 767px) {
+	body {
+		font-size: 15px;
+	}
+	.header {
+		height: auto;
+	}
+	.header > div:not(.subMenu) {
+		grid-template-columns: 1fr auto;
+		grid-template-areas: 'Logo Login' 'Menu Menu';
+		padding: 8px 12px;
+	}
+	.header > div > .Logo img {
+		width: 120px;
+		height: auto;
+	}
+	.header > div > .menu {
+		margin: 4px 0 8px;
+	}
+	.header > div > .menu > ul > li:not(.left) {
+		margin-left: 16px;
+	}
+	.header > div > .login {
+		margin: auto 0;
+		font-size: 14px;
+	}
+	.header > div > .login > .mypageList {
+		right: 8px;
+		top: 56px;
+	}
+	.header > div > .login > .mypageList > .mypageList2 {
+		margin-left: 0;
+	}
+	.header .subMenu {
+		height: auto;
+	}
+	.header .subMenu > div {
+		margin: 0;
+		padding: 12px;
+	}
+	.header .subMenu > div > ul > li,
+	.header .subMenu > div > ul > .left {
+		margin-left: 0 !important;
+		margin-right: 16px;
+	}
+	.visual {
+		padding: 24px 0 40px;
+	}
+	.center_right_top {
+		padding: 16px 12px;
+	}
+	#searchForm,
+	#searchForm td {
+		display: block;
+		width: 100%;
+	}
+	#SEARCHVALUE,
+	#address {
+		width: 100% !important;
+		max-width: 100%;
+		margin: 8px 0 0;
+		box-sizing: border-box;
+	}
+	select {
+		float: none;
+		max-width: 100%;
+	}
+	.Hp_list td[style] {
+		width: auto !important;
+	}
+	.Hp_list font[size='6'] {
+		font-size: 20px;
+	}
+	.board_view th,
+	.board_view td {
+		display: block;
+		width: auto;
+	}
+	.reserv {
+		width: auto;
+		padding: 24px 12px 40px;
+	}
+	.reserv > div,
+	.reserv > #result {
+		float: none !important;
+		display: block !important;
+		width: auto !important;
+		padding-right: 0 !important;
+		margin-bottom: 16px;
+	}
+	.reserv > div > div {
+		height: auto !important;
+		min-height: 120px;
+	}
+	.myReservList,
+	.FavList {
+		padding: 24px 12px;
+	}
+	.myReservList > table,
+	.FavList > table {
+		width: 100% !important;
+		font-size: 14px;
+	}
+	.myReservList #Notice {
+		margin-top: 40px;
+	}
+	.footer p {
+		margin-left: 0;
+		float: none;
+	}
+	.footer img {
+		margin-left: 0;
+	}
+	.section-cta .button-cta {
+		display: inline-block;
+		margin-top: 12px;
+	}
+}
+
+/* Mock mode has no location provider: reclaim map space rather than show an empty panel. */
+.gridForm { display:block; }
+.gridForm>#listForm { width:100%; margin:0; }
+.gridForm>div:has(.floatMenu),#searchForm tr:nth-child(2) { display:none; }
+.center_right_top { background:#edf3f0!important; }
+.footer { margin-top:30px!important; }
+.footer #contact { padding:24px 0; }
+.footer #contact .section-title,.footer #contact .col-md-4 { display:none; }
+.footer h2 { font-size:20px; }
+.demo-notice { position:static; font-size:12px; background:#1d4945; }
+
+.footer #contact .col-md-6 { width:100%; }
+.footer #contact .section-text { display:flex; flex-wrap:wrap; gap:6px 20px; align-items:baseline; }
+.footer #contact .section-text h4 { font-size:14px; margin:0; }
+.footer #contact .section-text p { margin:0; font-size:12px; line-height:1.6; }
+.footer #back-top { display:none; }
+.footer>.Tiles_wrap>p { margin:10px 0; font-size:12px; }
+
+/* Approved public medical service world: source screens retain controls and contracts. */
+:root{--care-paper:#fff;--care-ink:#13263f;--care-accent:#1f5fb4;--care-muted:#4c626c;--care-line:#d4dfe3}body{background:#fff!important;color:#13263f!important}.complete-nav{display:flex;flex-wrap:wrap;gap:12px 24px;max-width:1200px;padding:18px 24px;margin:auto;border-bottom:1px solid #d4dfe3}.complete-nav a{font-size:15px;color:#1f5fb4;text-decoration:none}.care-eyebrow,.care-step-number{display:none}.care-home{background:#fff!important}.care-search-panel,.care-next{background:#f3f6f7!important;border-radius:10px!important;box-shadow:none!important}.care-search-panel button{background:#1f5fb4!important}input,select,textarea{accent-color:#1f5fb4;caret-color:#1f5fb4}a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #2d7ad6;outline-offset:3px}::selection{background:#cfe0f6;color:#13263f}.Tiles_wrap{max-width:1152px!important;width:calc(100% - 40px)!important}.board_view,.board_list{width:100%!important}table{font-variant-numeric:tabular-nums}@media(max-width:760px){.complete-nav{gap:10px 16px}.Tiles_wrap{overflow-x:auto}.care-layout{grid-template-columns:1fr!important}}

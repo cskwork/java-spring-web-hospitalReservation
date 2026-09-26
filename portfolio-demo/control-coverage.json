@@ -1,0 +1,34 @@
+{
+  "scope": "Original JSP controls plus new compatibility workspace; DOM/source verification only",
+  "navigation": [
+    "search",
+    "detail",
+    "booking",
+    "reservations",
+    "past",
+    "review",
+    "favorites",
+    "profile",
+    "points",
+    "notice",
+    "faq",
+    "qna",
+    "guide",
+    "accounts",
+    "register",
+    "recover",
+    "withdraw",
+    "admin",
+    "catalog"
+  ],
+  "commands": {
+    "search,detail,slots,book,cancel,reviewForm,rate,favorite,unfavorite": "flows.test.mjs; modules.test.mjs wrapper lifecycle and slot retry tests",
+    "login,logout,register,checkId,recover,resetPassword": "modules.test.mjs accounts and token expiry; workspace.test.mjs routes",
+    "profile,avatar,charge,withdraw,reset": "modules.test.mjs identity, avatar, ledger, withdrawal, reset",
+    "notice.save,notice.delete,faq.save,faq.delete,qna.save,qna.delete,qna.answer": "modules.test.mjs cross-role CRUD; workspace.test.mjs form persistence",
+    "catalog.save,catalog.delete,admin.reservation,admin.member,admin.review": "modules.test.mjs role, catalog, admin transitions, moderation",
+    "boardSearch": "workspace.js content filters; workspace.test.mjs form/route audit; no visual-layout claim"
+  },
+  "native": "NativeSecurityTest, NativeAuthenticationTest, NativeTransactionTest; native-client route-inventory.json",
+  "notVerified": "Rendered visual layout, real Oracle/container/provider behavior; no browser or deployment used"
+}

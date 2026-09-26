@@ -5,6 +5,10 @@
 <%@ include file="/WEB-INF/include/include-header.jspf" %>
 </head>
 <body>
+<main class="care-detail">
+<a href="/hospital/hplist/List/">← 병원 목록</a>
+<h1>${map.HOSP}</h1>
+<p>${map.MAJOR} · 진료시간 ${map.HOUR}</p>
 	<table class="board_view" style="margin: auto;">
 		<colgroup>
 			<col width="15%"/>
@@ -13,12 +17,12 @@
 			<col width="35%"/>
 		</colgroup>
 		
-		<caption>게시글 상세</caption>
+		<caption>병원 상세 정보</caption>
 		
 		<tbody>
 			<tr>
-				<th scope="row">H_IDX</th>
-				<td>${map.H_IDX }</td>
+				<th scope="row">방문 평점</th>
+<td><a href="/hospital/hplist/List/?QUERY=hplist.selectRateHpList" data-hospital-rate="${map.H_IDX}">방문 평점 보기</a></td>
 				<th scope="row">병원명</th>
 				<td>${map.HOSP }</td>
 			</tr>
@@ -42,8 +46,8 @@
 			<tr>
 				<th scope="row">주소</th>
 				<td>${map.ADDR }</td>
-				<th scope="row">주소(GPS)</th>
-				<td>${map.ADDR_GPS }</td>
+				<th scope="row">예약 안내</th>
+<td>날짜와 시간을 선택해 예약할 수 있습니다.</td>
 			</tr>
 			
 			<tr>
@@ -57,6 +61,7 @@
 			</tr>
 		</tbody>
 	</table>
+</main>
 	
 	<%@ include file="/WEB-INF/include/include-body.jspf" %>
 	

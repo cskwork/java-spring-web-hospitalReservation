@@ -19,7 +19,7 @@
 		<![CDATA[
 				ADDR = #{ADDR},
 				JUMIN = #{JUMIN},
-				POINT = #{POINT}
+				POINT = POINT
 			WHERE 
 				ID = #{ID}
 		]]>
@@ -127,7 +127,7 @@
 				GENDER = #{GENDER},
 				ADDR = #{ADDR},
 				DEL_CHK = #{DEL_CHK},
-				POINT = #{POINT}
+				POINT = POINT
 			WHERE 
 				ID = #{ID}
 		]]>
@@ -162,7 +162,7 @@
 				HITS = #{HITS},
 				REG = #{REG},
 				TITLE = #{TITLE},
-				COTENT = #{CONTENT},
+				CONTENT = #{CONTENT},
 				DEL_CHK = #{DEL_CHK}
 			WHERE 
 				IDX = #{IDX}

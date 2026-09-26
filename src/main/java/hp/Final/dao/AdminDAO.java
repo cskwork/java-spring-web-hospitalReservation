@@ -9,6 +9,10 @@ import hp.common.dao.AbstractDAO;
 @SuppressWarnings("unchecked")
 @Repository("AdminDAO")
 public class AdminDAO extends AbstractDAO {
+ public Map<String,Object> lockReservation(Map<String,Object> p){return (Map<String,Object>)selectOne("secure.lockReservation",p);}
+ public int transitionReservation(Map<String,Object> p){return ((Number)update("secure.transitionReservation",p)).intValue();}
+ public void refund(Map<String,Object> p){update("mypage.returnPoint",p);}
+
 	public List<Map<String, Object>> selectNoticeList(Map<String, Object> map) throws Exception{	//�������� ����Ʈ ��ȸ
 		return (List<Map<String, Object>>) selectPagingList("notice.selectAdminNoticeList", map);
 	}

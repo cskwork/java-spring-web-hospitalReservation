@@ -30,6 +30,8 @@ public class HpListController {
 
 	@RequestMapping("/List")
 	public String openHospitalPage(CommandMap commandMap, Model model) throws Exception {
+		model.addAttribute("SEARCHTYPE", commandMap.getMap().get("SEARCHTYPE"));
+		model.addAttribute("SEARCHVALUE", commandMap.getMap().get("SEARCHVALUE"));
 		model.addAttribute("boardTitle", (String) commandMap.getMap().get("boardTitle"));
 		model.addAttribute("LIST", (String) commandMap.getMap().get("LIST"));
 		model.addAttribute("QUERY", (String) commandMap.getMap().get("QUERY"));
@@ -41,6 +43,8 @@ public class HpListController {
 
 	@RequestMapping(value = "/selectHpList",  method = RequestMethod.POST)
 	public String selectHospitalList(CommandMap commandMap, Model model, HttpSession session) throws Exception {
+		commandMap.getMap().remove("SERVER_ADMIN");
+        if("hplist.selectAdminHpList".equals(commandMap.get("QUERY"))){hp.common.security.SessionIdentity.admin(session);commandMap.put("SERVER_ADMIN",Boolean.TRUE);}
 		List<Map<String, Object>> list = HpListService.selectBoardList(commandMap.getMap(), session);
 		
 		model.addAttribute("list", list);

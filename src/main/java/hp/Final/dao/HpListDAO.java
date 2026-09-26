@@ -12,7 +12,9 @@ import hp.common.dao.AbstractDAO;
 public class HpListDAO extends AbstractDAO {
 
 	public List<Map<String, Object>> selectBoardList(Map<String, Object> map) throws Exception {
-		return (List<Map<String, Object>>) selectPagingList((String) map.get("QUERY"), map);
+		String query=String.valueOf(map.get("QUERY"));
+        if(!java.util.Arrays.asList("hplist.selectAllHpList","hplist.selectRateHpList").contains(query)&&!("hplist.selectAdminHpList".equals(query)&&Boolean.TRUE.equals(map.get("SERVER_ADMIN"))))throw new SecurityException("Unknown hospital query");
+        return (List<Map<String, Object>>) selectPagingList(query, map);
 	}
 
 	public Map<String, Object> selectHpDetail(Map<String, Object> map) throws Exception {

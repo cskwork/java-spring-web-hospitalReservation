@@ -53,7 +53,7 @@
 			<a href="#" class="btn" id="reservation">예약하기</a>
 		</div>
 	</div>
-	
+
 	<div class="point_payment">
 		<div class="box">
 			<input type="button" name="close" value="닫기" />
@@ -68,21 +68,27 @@
 		</div>
 		<div class="bbg"></div>
 	</div>
-	
+
 	<%@ include file="/WEB-INF/include/include-body.jspf" %>
 	<script type="text/javascript">
 		$(document).ready(function() {
 			window.onload = function() {
 				fn_selectHpList();
 			}; //병원 선택창
-			
+
+			//예약하기 버튼: 예약시간까지 고르기 전에는 안내만 한다
+			$("#reservation").on("click", function(e) {
+				e.preventDefault();
+				alert("병원, 진료과목, 예약일, 예약시간을 모두 선택해주세요.");
+			});
+
 			//결제하기 버튼
 			$("a[name='payment']").on("click", function(e) {
 				var amount = $(this).parent().find("input[name='won']").val();
 				fn_Point(amount);
 			});
 		});
-		
+
 		//병원 선택창 ajax
 		function fn_selectHpList() {
 			var comAjax = new ComAjax();
@@ -91,16 +97,16 @@
 			comAjax.addParam("H_IDX",$("#H_IDX").val());
 			comAjax.ajax();
 		}
-		
+
 		var hp;
-		
+
 		//병원 선택창
 		function fn_selectHpListCallback(data) {
 			var total = data.TOTAL;
 			var body = $("#hp>tbody");
-			
+
 			body.empty();
-	
+
 			if(total == 0) {
 				var str = "<tr>" +
 								"<td colspan='1'>예약가능한 병원이 없습니다.</td>" +
@@ -109,44 +115,51 @@
 			}
 			else{		
 				var str = "";
-				
+
 				$.each(data.list, function(key, value) {
 					str += "<tr>" +
 								"<td class='title'>" +
 									"<a href='#this' name='hosp'>" + value.HOSP + "</a>" +
-									"<input type='hidden' id='H_IDX' value=" + value.H_IDX + ">" +
-									"<input type='hidden' id='HOSP' value=" + value.HOSP + ">" +
+									"<input type='hidden' id='H_IDX' value='" + value.H_IDX + "'>" +
+									"<input type='hidden' id='HOSP' value='" + value.HOSP + "'>" +
 								"</td>" +
 							"</tr>";
 				});
-							
+
 					body.append(str);
-							
-							
-							
+
+
+
 				$("a[name='hosp']").on("click", function(e) {
 					e.preventDefault();
+					$("#hp td.selected").removeClass("selected");
+					$(this).parent().addClass("selected");
 					fn_selectMajor($(this));
 				});
-				
+                // A hospital chosen on its detail/list page stays selected here.
+                if ($('.reserv > #H_IDX').val() && data.list.length === 1) $("a[name='hosp']").first().trigger('click');
+
 				}
 		}
-		
+
 		 function fn_selectMajor(obj) {
 		 	var comAjax = new ComAjax();
 		 	comAjax.setUrl("<c:url value='/reserv/SelectMajorList'/>");
 			comAjax.setCallback("fn_selectMjListCallback");
 			comAjax.addParam("H_IDX",obj.parent().find("#H_IDX").val());
 			comAjax.addParam("HOSP",obj.parent().find("#HOSP").val());
-			
+
 			comAjax.ajax();
 		 }  
 		 function fn_selectMjListCallback(data) {
-			$("#tb").remove();
-			
+			// 병원을 다시 고르면 이전에 고른 날짜·시간·확인 내용을 비운다
+			$("#calendar>tbody").empty();
+			$("#reservdate").empty();
+			$("#reservResult").empty();
+
 		 	var maj_total = data.MAJOR_TOTAL;
 		 	var body = $("#major>tbody");	 	
-		 	
+
 		 	body.empty();
 		 	if(maj_total == 0) {
 				 var str = "<tr>" +
@@ -160,21 +173,23 @@
 					 str += "<tr>" +
 								 "<td class='title'>" +
 									 "<a href='#this' name='major'>" + value.MAJOR + "</a>" +
-									 "<input type='hidden' id='H_IDX' value=" + value.H_IDX + ">" +
-									 "<input type='hidden' id='HOSP' value=" + value.HOSP + ">" +
-									 "<input type='hidden' id='MAJOR' value=" + value.MAJOR + ">" +
+									 "<input type='hidden' id='H_IDX' value='" + value.H_IDX + "'>" +
+									 "<input type='hidden' id='HOSP' value='" + value.HOSP + "'>" +
+									 "<input type='hidden' id='MAJOR' value='" + value.MAJOR + "'>" +
 								 "</td>" +
 							 "</tr>";
 				 });
 				body.append(str);
-				
+
 				$("a[name='major']").on("click", function(e) {
 					e.preventDefault();
+					$("#major td.selected").removeClass("selected");
+					$(this).parent().addClass("selected");
 					fn_selectDate($(this));
 				});
 			}
 		}
-		
+
 		function fn_selectDate(obj) {
 			var comAjax = new ComAjax();
 		 	comAjax.setUrl("<c:url value='/reserv/SelectDate'/>");
@@ -182,37 +197,56 @@
 			comAjax.addParam("H_IDX",obj.parent().find("#H_IDX").val());
 			comAjax.addParam("HOSP",obj.parent().find("#HOSP").val());
 			comAjax.addParam("MAJOR",obj.parent().find("#MAJOR").val());
-	
+
 			comAjax.ajax();
 		}
-		  
+
 		function totalDays(month,year) {
 		  var tempDay = new Array(31,28,31,30,31,30,31,31,30,31,30,31);//월마다 일수
-		 
+
 		  //윤년계산
 		  if(((year %4 ==0) && (year%100!=0)) ||(year%400 ==0))
 			tempDay[1] = 29;
 		  else
 			tempDay[1] = 28;
-			
+
 		  return tempDay[month];
 		}
-		
+
 	function makeCalendar(data) {
 		var h_idx = data.H_IDX;
 		var hosp = data.HOSP;
 		var major = data.MAJOR;
 		var today=new Date();
-		var year=today.getFullYear();
-		var month=today.getMonth();
-		var date = today.getDate();
-	
+		// 오늘부터 7일 뒤까지(일주일 단위) 예약 가능. 월말이면 다음 달 달력도 함께 그린다.
+		var first = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+		var last = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 7);
+
 		var body=$("#calendar>tbody");
 		body.empty();
-	
+		$("#reservdate").empty();
+		$("#reservResult").empty();
+
+		var text = makeMonth(first.getFullYear(), first.getMonth(), first, last, h_idx, hosp, major);
+		if(last.getMonth() != first.getMonth())
+			text += makeMonth(last.getFullYear(), last.getMonth(), first, last, h_idx, hosp, major);
+		text += ''
+		+'<p id="p"><font color="red">'+'※ 일주일 단위로 예약이 가능합니다.'+'</font></p>';
+
+			body.append(text);
+			 $("a[name='cal']").on("click", function(e) {
+				e.preventDefault();
+				$("#calendar td.selected").removeClass("selected");
+				$(this).parent().addClass("selected");
+				fn_Cal($(this));
+			});
+		}
+
+	function makeMonth(year, month, first, last, h_idx, hosp, major) {
+		var today = new Date();
 		var firstOfMonth = new Date(year,month,1);
 		var firstDay = firstOfMonth.getDay();
-	
+
 		var lastDate = totalDays(month,year);
 		var text =  ""
 			+ '<TABLE ID="tb" BORDER=2 BORDERCOLOR=green style="BORDER-COLLAPSE:collapse">'
@@ -224,33 +258,35 @@
 				+ '<td width=30><b>수</b></td>'
 				+ '<td width=30><b>목</b></td>'
 				+ '<td width=30><b>금</b></td>'
-				+ '<td width=30><font color=blue><b>토</b></td></font></td>'
+				+ '<td width=30><font color=blue><b>토</b></font></td>'
 			+ '</tr>';
-	
+
 		var dayNum = 1
 		var curCol = 1
-	
-		for (var i=1; i<=Math.ceil((lastDate + firstDay)/7);i++,j++) {
+
+		for (var i=1; i<=Math.ceil((lastDate + firstDay)/7);i++) {
 			text += ''
 			+ '<tr align = "center"valign="top">'
-		 
+
 			for (var j=1; j<=7; j++) {
 				if(dayNum >lastDate)
 				 	break;
-				
+
 				if(curCol <firstDay+1) {
 					text += '<TD></TD>';
 					curCol++;
 				} else {
-					 
-					if (dayNum == date ) {
+					var cur = new Date(year, month, dayNum);
+					var reservable = cur >= first && cur <= last;
+
+					if (cur.getFullYear() == today.getFullYear() && cur.getMonth() == today.getMonth() && dayNum == today.getDate()) {
 						text += ''
 				+ '<td style="background: skyblue;">';
 					} else {
 						text += ''
 				+ '<td>';
 					}
-					
+
 					text += ''
 					+ '<input type="hidden" id="H_IDX" value="' + h_idx + '"/>'
 					+ '<input type="hidden" id="HOSP" value="' + hosp + '"/>'
@@ -258,12 +294,12 @@
 					+ '<input type="hidden" id="dayNum" value="' + dayNum + '"/>'
 					+ '<input type="hidden" id="year" value="' + year + '"/>'
 					+ '<input type="hidden" id="month" value="' + (month+1) + '"/>';
-					
-					if (dayNum >= date && dayNum < date+8) {
+
+					if (reservable) {
 						text += ''
 					+ '<a href="#this" name="cal">';
 					}
-					
+
 					switch(j) {
 					case 1 :
 						text += ''
@@ -273,37 +309,30 @@
 						text += ''
 						+ '<font color=blue>' + dayNum + '</font>';
 					break;
-				
+
 					default :
 						text += dayNum; 
 					}
-	
-					if (dayNum >= date) {
+
+					if (reservable) {
 						text += ''
 					+ '</a>';
 					}
-					
+
 					text += ''
 				+ '</td>';
 					dayNum++;
 					}
-				
+
 				}
 				text += ''
 			+ '</tr>';
 			}
 			text += ''
 		+ '</table>';
-		text += ''
-		+'<p id="p"><font color="red">'+'※ 일주일 단위로 예약이 가능합니다.'+'</font></p>';
-	
-			body.append(text);
-			 $("a[name='cal']").on("click", function(e) {
-				e.preventDefault();
-				fn_Cal($(this));
-			});
+		return text;
 		}
-		
+
 		function fn_Cal(obj) {
 			var h_idx = obj.parent().find("#H_IDX").val();
 			var hosp = obj.parent().find("#HOSP").val();
@@ -311,9 +340,9 @@
 			var year = obj.parent().find("#year").val();
 			var month = obj.parent().find("#month").val();
 			var day = obj.parent().find("#dayNum").val();
-			
+
 			var comAjax = new ComAjax();
-			
+
 			comAjax.setUrl("<c:url value='/reserv/ReservDate'/>");
 			comAjax.setCallback("fn_reservDateCallback");
 			comAjax.addParam("H_IDX",h_idx);
@@ -322,12 +351,12 @@
 			comAjax.addParam("year",year);
 			comAjax.addParam("month",month);
 			comAjax.addParam("day",day);
-			
+
 			comAjax.ajax();
 		}
 		function fn_reservDateCallback(data) {
 			var body=$("#reservdate");
-			
+
 			var h_idx = data.H_IDX;
 			var hosp = data.HOSP;
 			var major = data.MAJOR;
@@ -335,10 +364,12 @@
 			var month = data.MONTH;
 			var day = data.DAY; 
 			var time = data.TIMELIST;
-			
+
 			body.empty();
+			$("#reservResult").empty();
 			if(year != "" || month != "" || day !="") {
 				if(month < 10) month = '0'+month;
+				if(day < 10) day = '0'+day;
 				var str = "<p>"+"예약일 :" +year+ "/" +month+ "/"+day + "</p>"+
 							"<br>"+
 							"예약시간 : "+
@@ -348,7 +379,7 @@
 							"<input type='hidden' id='YEAR' value='" + year + "'/>"+
 							"<input type='hidden' id='MONTH' value='" + month + "'/>"+
 							"<input type='hidden' id='DAY' value='" + day + "'/>"+
-							"<select id='time'>"+
+							"<select id='reservTime'>"+
 								"<option value='0'>"+"---선택---"+
 								"</option>";
 								for(var i in time) {
@@ -356,10 +387,17 @@
 									"</option>";
 								}				
 								str += "</select>"; 						
+				if(time == null || time.length == 0)
+					str += "<p><font color='red'>예약 가능한 시간이 없습니다. 다른 날짜를 선택해주세요.</font></p>";
 				body.append(str);
 			}
-			
-			$("#time").change(function(){
+
+			// 예약시간 select 는 id 가 빈 <div id="time"> 과 겹쳐 있었다 → reservTime
+			$("#reservTime").change(function(){
+				if($(this).val() == "0") {
+					$("#reservResult").empty();
+					return;
+				}
 				fn_result($(this));
 			});	
 		}
@@ -371,7 +409,7 @@
 			var month = obj.parent().find("#MONTH").val();
 			var day = obj.parent().find("#DAY").val();
 			var time = obj.val();
-			
+
 			var comAjax = new ComAjax();
 			comAjax.setUrl("<c:url value='/reserv/ReservResult'/>");
 			comAjax.setCallback("fn_reservResultCallback");
@@ -382,13 +420,13 @@
 			comAjax.addParam("MONTH",month);
 			comAjax.addParam("DAY",day);
 			comAjax.addParam("TIME",time);
-			
+
 			comAjax.ajax();
 		}
-		
+
 		function fn_reservResultCallback(data){
 			var body = $("#reservResult");
-			
+
 			var h_idx = data.H_IDX;
 			var hosp = data.HOSP;
 			var major = data.MAJOR;
@@ -396,7 +434,7 @@
 			var month = data.MONTH;
 			var day = data.DAY; 
 			var time = data.TIME;
-		
+
 			body.empty();
 			if(year != "" || month != "" || day !="") {
 				var str = 	"<input type='hidden' id='H_IDX' value='" + h_idx + "'/>"+
@@ -411,12 +449,16 @@
 							"<p>"+"진료과목 :" +major + "</p>"+
 							"<br>"+
 							"<p>"+"예약일자 - 예약시간 :" +year+ "/" +month+ "/" +day+ "\t" +time+ "</p>";				
-													
+
 				body.append(str);
 			}
-			
-			$("#reservation").on("click", function(e){
+
+			$("#reservation").off("click").on("click", function(e){
 				e.preventDefault();
+				if($("#reservResult").find("#TIME").length == 0) {
+					alert("병원, 진료과목, 예약일, 예약시간을 모두 선택해주세요.");
+					return;
+				}
 				if(confirm("예약하시겠습니까?"))
 					fn_reservation($(this));
 			});	
@@ -429,7 +471,7 @@
 			var month = obj.parent().find("#MONTH").val();
 			var day = obj.parent().find("#DAY").val();
 			var time = obj.parent().find("#TIME").val();
-			
+
 			var comAjax = new ComAjax();
 			comAjax.setUrl("<c:url value='/reserv/Reservation'/>");
 			comAjax.setCallback("fn_submit");
@@ -441,7 +483,7 @@
 			comAjax.addParam("DAY", day);
 			comAjax.addParam("RESERV2", time);
 			comAjax.addParam("STEP", "reserv");
-			
+
 			comAjax.ajax();
 		}
 		function fn_submit(data) {
@@ -449,7 +491,7 @@
 				var comSubmit = new ComSubmit();
 				comSubmit.setUrl("<c:url value='/reserv/MyReserv'/>")
 				comSubmit.addParam("STEP", "reserv");
-	
+
 				comSubmit.submit();
 			} else if(data.reservFalse == 1) {
 				if(confirm("포인트가 부족합니다.\n현재 포인트는: " + data.POINT + "입니다.\n충전하시겠습니까?")) {
@@ -457,9 +499,11 @@
 				}
 			} else if(data.reservFalse == 2) {
 				alert("예약은 한 병원당 한 번만 가능합니다.");
+			} else if(data.message) {
+				alert(data.message);
 			}
 		}
-		
+
 		function fn_Point(amount) {
 			IMP.init('imp46626503'); // 가맹점 식별 코드
 			IMP.request_pay({
@@ -480,7 +524,7 @@
 				}
 			});
 		}
-		
+
 		function payment_Complete(data) {
 			alert("결제가 완료되었습니다.\n 예약하기 버튼을 다시 눌러주세요.");
 			$(document).find(".point_payment").css("display", "none");
