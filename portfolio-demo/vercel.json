@@ -11,7 +11,7 @@
       "permanent": false
     },
     {
-      "source": "/hospital",
+      "source": "/hospital/",
       "destination": "/hospital/workspace/",
       "permanent": false
     }
